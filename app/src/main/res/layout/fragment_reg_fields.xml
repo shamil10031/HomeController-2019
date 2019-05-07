@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/colorPrimaryDark"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <EditText
+        android:id="@+id/et_reg_name"
+        android:layout_width="@dimen/et_auth_width"
+        android:layout_height="@dimen/et_auth_height"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/et_auth_background"
+        android:fitsSystemWindows="true"
+        android:hint="@string/Name"
+        android:paddingLeft="@dimen/et_auth_padding"
+        android:paddingRight="@dimen/et_auth_padding"
+        android:singleLine="true"
+        android:textColor="#FFF"
+        android:textColorHint="#BEBEBE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Shamil" />
+
+    <EditText
+        android:id="@+id/et_reg_login"
+        android:layout_width="@dimen/et_auth_width"
+        android:layout_height="@dimen/et_auth_height"
+        android:layout_marginTop="@dimen/auth_elements_margin"
+        android:background="@drawable/et_auth_background"
+        android:fitsSystemWindows="true"
+        android:hint="@string/Name"
+        android:paddingLeft="@dimen/et_auth_padding"
+        android:paddingRight="@dimen/et_auth_padding"
+        android:singleLine="true"
+        android:textColor="#FFF"
+        android:textColorHint="#BEBEBE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_reg_name"
+        tools:text="shomazz" />
+
+    <EditText
+        android:id="@+id/et_reg_password"
+        android:layout_width="@dimen/et_auth_width"
+        android:layout_height="@dimen/et_auth_height"
+        android:layout_marginTop="@dimen/auth_elements_margin"
+        android:background="@drawable/et_auth_background"
+        android:fitsSystemWindows="true"
+        android:hint="@string/Password"
+        android:inputType="textPassword"
+        android:paddingLeft="@dimen/et_auth_padding"
+        android:paddingRight="@dimen/et_auth_padding"
+        android:singleLine="true"
+        android:textColor="#FFF"
+        android:textColorHint="#BEBEBE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_reg_login"
+        tools:text="I Love Nikita" />
+
+    <Button
+        android:id="@+id/btn_sign_up"
+        android:layout_width="@dimen/et_auth_width"
+        android:layout_height="@dimen/et_auth_height"
+        android:layout_marginTop="@dimen/auth_elements_margin"
+        android:background="@drawable/btn_sign_up_background"
+        android:fitsSystemWindows="true"
+        android:text="@string/Sign_up"
+        android:textColor="#FFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_reg_password" />
+
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fitsSystemWindows="true"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+</android.support.constraint.ConstraintLayout>
