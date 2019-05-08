@@ -2,8 +2,9 @@ package shomazzapp.com.homecontorl.common;
 
 public class Response {
 
-    public static int OK = 0;
-    public static int TIMEOUT_WAITING = 1;
+    public static final int OK = 0;
+    public static final int TIMEOUT_WAITING = 1;
+    public static final int CONNECTION_ERROR = 2;
 
     private int responseCode;
     private String response;

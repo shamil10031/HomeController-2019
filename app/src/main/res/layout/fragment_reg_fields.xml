@@ -65,7 +65,7 @@
         tools:text="I Love Nikita" />
 
     <Button
-        android:id="@+id/btn_sign_up"
+        android:id="@+id/btn_reg_sign_up"
         android:layout_width="@dimen/et_auth_width"
         android:layout_height="@dimen/et_auth_height"
         android:layout_marginTop="@dimen/auth_elements_margin"
