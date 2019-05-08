@@ -32,8 +32,6 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
     private EditText etLogin;
     private EditText etPassword;
 
-    private Handler handler = new Handler();
-
     private static final int LAYOUT = R.layout.fragment_auth;
 
     public static AuthFragment newInstance() {
@@ -89,7 +87,8 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
     }
 
     private void hideKeyBoard(EditText editText) {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 

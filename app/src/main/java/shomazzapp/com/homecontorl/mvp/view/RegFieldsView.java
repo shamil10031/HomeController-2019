@@ -8,4 +8,6 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface RegFieldsView extends MvpView {
 
+
+
 }
