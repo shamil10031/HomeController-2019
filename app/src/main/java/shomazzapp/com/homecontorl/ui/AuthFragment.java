@@ -2,6 +2,7 @@ package shomazzapp.com.homecontorl.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentController;
@@ -30,6 +31,8 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
     private ProgressBar progressBar;
     private EditText etLogin;
     private EditText etPassword;
+
+    private Handler handler = new Handler();
 
     private static final int LAYOUT = R.layout.fragment_auth;
 
@@ -111,8 +114,8 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
     }
 
     @Override
-    public void showError(String error) {
+    public void showMsg(String msg) {
         //TODO: show error normally
-        Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
     }
 }

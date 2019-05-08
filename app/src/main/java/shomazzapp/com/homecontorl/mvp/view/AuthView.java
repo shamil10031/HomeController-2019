@@ -13,6 +13,6 @@ public interface AuthView extends MvpView {
     void finishAuth();
 
     @StateStrategyType(SkipStrategy.class)
-    void showError(String error);
+    void showMsg(String msg);
 
 }
