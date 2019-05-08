@@ -1,7 +1,5 @@
 package shomazzapp.com.homecontorl.mvp.model;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -9,9 +7,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 
 
 import shomazzapp.com.homecontorl.common.Response;
