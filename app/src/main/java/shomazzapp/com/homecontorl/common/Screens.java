@@ -4,5 +4,6 @@ public enum Screens {
     AUTH,
     REGISTRATION_FIELDS,
     REGISTRATION_CAMERA,
-    DEVICES_LIST
+    DEVICES_LIST,
+    START
 }

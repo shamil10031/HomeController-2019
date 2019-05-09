@@ -24,8 +24,7 @@
         android:textColorHint="#BEBEBE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Shamil" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/et_reg_login"
@@ -34,7 +33,7 @@
         android:layout_marginTop="@dimen/auth_elements_margin"
         android:background="@drawable/et_auth_background"
         android:fitsSystemWindows="true"
-        android:hint="@string/Name"
+        android:hint="@string/Login"
         android:paddingLeft="@dimen/et_auth_padding"
         android:paddingRight="@dimen/et_auth_padding"
         android:singleLine="true"
@@ -42,8 +41,7 @@
         android:textColorHint="#BEBEBE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_reg_name"
-        tools:text="shomazz" />
+        app:layout_constraintTop_toBottomOf="@id/et_reg_name" />
 
     <EditText
         android:id="@+id/et_reg_password"
@@ -78,7 +76,7 @@
         app:layout_constraintTop_toBottomOf="@+id/et_reg_password" />
 
     <ProgressBar
-        android:id="@+id/progress_circular"
+        android:id="@+id/progress_reg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

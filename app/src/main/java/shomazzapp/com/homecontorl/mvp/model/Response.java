@@ -6,6 +6,9 @@ public class Response {
     public static final int TIMEOUT_WAITING = 1;
     public static final int CONNECTION_ERROR = 2;
     public static final int NO_ROUTE_TO_HOST = 3;
+    public static final int SUCCESS = 200;
+    public static final int ERROR = 400;
+
 
     private int responseCode;
     private String response;

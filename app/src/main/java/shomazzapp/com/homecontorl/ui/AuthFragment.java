@@ -2,10 +2,8 @@ package shomazzapp.com.homecontorl.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentController;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +18,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import shomazzapp.com.homecontorl.R;
 import shomazzapp.com.homecontorl.common.FController;
+import shomazzapp.com.homecontorl.common.ViewPagerController;
 import shomazzapp.com.homecontorl.mvp.presnter.AuthPresenter;
 import shomazzapp.com.homecontorl.mvp.view.AuthView;
 
@@ -41,14 +40,17 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter.setFragmentController((FController) getActivity());
+        FController fController = (FController) getActivity();
+        presenter.setFragmentController(fController);
+        presenter.setViewPagerController((ViewPagerController)
+                fController.getFragmentByTag(StartFragment.class.toString()));
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(LAYOUT, container, false);
+        View view = inflater.inflate(LAYOUT, null);
         init(view);
         clearFocuses();
         return view;
@@ -68,7 +70,7 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
     private void init(View view) {
         etLogin = (EditText) view.findViewById(R.id.et_login);
         etPassword = (EditText) view.findViewById(R.id.et_password);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_circular);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_auth);
         Button btnSignIn = (Button) view.findViewById(R.id.btn_sign_in);
         Button btnSignUp = (Button) view.findViewById(R.id.btn_sign_up);
         btnSignIn.setOnClickListener(v -> onSingIn());

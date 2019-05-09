@@ -10,6 +10,7 @@ import com.arellomobile.mvp.MvpPresenter;
 import shomazzapp.com.homecontorl.common.ClientListener;
 import shomazzapp.com.homecontorl.common.FController;
 import shomazzapp.com.homecontorl.common.Screens;
+import shomazzapp.com.homecontorl.common.ViewPagerController;
 import shomazzapp.com.homecontorl.mvp.model.Client;
 import shomazzapp.com.homecontorl.mvp.model.Request;
 import shomazzapp.com.homecontorl.mvp.model.Response;
@@ -18,6 +19,7 @@ import shomazzapp.com.homecontorl.mvp.view.AuthView;
 @InjectViewState
 public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListener {
 
+    private ViewPagerController pagerController;
     private FController fController;
     private Client client;
 
@@ -25,11 +27,18 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
         this.fController = fController;
     }
 
+    public void setViewPagerController(ViewPagerController pagerController) {
+        this.pagerController = pagerController;
+    }
+
     @Override
     public void reciveResponse(Response response) {
         runOnUi(() -> {
             getViewState().finishAuth();
             switch (response.getResponceCode()) {
+                case Response.SUCCESS:
+                    //fController.addFragment();
+                    return;
                 case Response.TIMEOUT_WAITING:
                     getViewState().showMsg("Connection timeout");
                     break;
@@ -54,16 +63,17 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
 
     public void signIn(String login, String password) {
         //TODO: check login and password for empty String
-
         getViewState().startAuth();
         if (client == null) client = new Client(this, Client.HOST, Client.PORT);
-        client.sendRequestForResponse(Request.createAuthRequest(login, password));
+        //client.sendRequestForResponse(Request.createAuthRequest(login, password));
+        client.sendRequestForResponse(Request.createAviableDevicesRequest(login));
         //client.sendRequestForResponse(Request.createHomeInfoRequest());
     }
 
 
     public void onSignUp() {
-        fController.addFragment(fController.createFragment(Screens.REGISTRATION_FIELDS), true);
+        pagerController.openFragment(Screens.REGISTRATION_FIELDS);
+        //fController.addFragment(fController.createFragment(Screens.REGISTRATION_FIELDS), true);
     }
 
 }

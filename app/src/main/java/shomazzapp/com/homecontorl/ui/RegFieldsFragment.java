@@ -44,7 +44,7 @@ public class RegFieldsFragment extends MvpAppCompatFragment implements RegFields
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(LAYOUT, container, false);
+        View view = inflater.inflate(LAYOUT, null);
         init(view);
         return view;
     }
