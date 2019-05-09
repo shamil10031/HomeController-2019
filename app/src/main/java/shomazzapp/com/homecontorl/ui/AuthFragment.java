@@ -57,17 +57,6 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
         return view;
     }
 
-    private void clearFocuses() {
-        if (etLogin != null) {
-            etLogin.clearFocus();
-            hideKeyBoard(etLogin);
-        }
-        if (etPassword != null) {
-            etPassword.clearFocus();
-            hideKeyBoard(etPassword);
-        }
-    }
-
     private void init(View view) {
         etLogin = (EditText) view.findViewById(R.id.et_login);
         etPassword = (EditText) view.findViewById(R.id.et_password);
@@ -87,6 +76,17 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
     private void onSignUp() {
         clearFocuses();
         presenter.onSignUp();
+    }
+
+    private void clearFocuses() {
+        if (etLogin != null) {
+            etLogin.clearFocus();
+            hideKeyBoard(etLogin);
+        }
+        if (etPassword != null) {
+            etPassword.clearFocus();
+            hideKeyBoard(etPassword);
+        }
     }
 
     private void hideKeyBoard(EditText editText) {

@@ -8,6 +8,7 @@ public class PreferencesHelper {
 
     public static final String APP_PREFERENCES = "cache";
     public static final String KEY_LOGIN = "login";
+    public static final String KEY_PASSWORD = "pass";
 
     public void putString(String key, String value, Context context) {
         SharedPreferences preferences =

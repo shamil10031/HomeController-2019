@@ -30,6 +30,7 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
     private PreferencesHelper prefHelper;
 
     private String login;
+    private String password;
 
     public AuthPresenter() {
         super();
@@ -37,7 +38,7 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
         prefHelper = new PreferencesHelper();
     }
 
-    public void setContext(Context context){
+    public void setContext(Context context) {
         this.context = new WeakReference<>(context);
     }
 
@@ -58,7 +59,9 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
                     fController.addFragment(fController
                             .createFragment(Screens.DEVICES_LIST), true);
                     prefHelper.putString(
-                            PreferencesHelper.KEY_LOGIN, login,context.get());
+                            PreferencesHelper.KEY_LOGIN, login, context.get());
+                    prefHelper.putString(
+                            PreferencesHelper.KEY_PASSWORD, password, context.get());
                     return;
                 case Response.TIMEOUT_WAITING:
                     getViewState().showMsg("Connection timeout");
@@ -89,11 +92,11 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
         //TODO: check login and password for empty String
         getViewState().startAuth();
         this.login = login;
+        this.password = password;
         client.sendRequestForResponse(Request.createAuthRequest(login, password));
         //client.sendRequestForResponse(Request.createAviableDevicesRequest(login));
         //client.sendRequestForResponse(Request.createHomeInfoRequest());
     }
-
 
     public void onSignUp() {
         pagerController.openFragment(Screens.REGISTRATION_FIELDS);

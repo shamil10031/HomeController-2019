@@ -62,7 +62,7 @@ public class MainActivity extends MvpAppCompatActivity implements FController {
             case REGISTRATION_FIELDS:
                 return RegFieldsFragment.newInstance();
             case REGISTRATION_CAMERA:
-                return null;
+                return RegCameraFragment.newInstance();
             case DEVICES_LIST:
                 return DeviceListFragment.newInstance();
             default:
