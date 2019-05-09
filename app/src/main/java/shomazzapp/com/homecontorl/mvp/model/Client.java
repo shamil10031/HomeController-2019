@@ -110,8 +110,8 @@ public class Client {
         if (!socket.isInputShutdown())
             inputStream.read(data);
         inputStream.close();
-        Response response = new Response(Response.OK, new String(data));
-        Log.d(NETWORK_TAG, "Response : " + response.getResponse());
+        Response response = new Response(new String(data));
+        Log.d(NETWORK_TAG, "Response : " + response.toString());
         return response;
     }
 }

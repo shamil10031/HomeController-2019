@@ -11,19 +11,29 @@ public class Response {
 
 
     private int responseCode;
-    private String response;
+    private String message;
 
-    public Response(int responseCode, String response) {
-        this.response = response;
+    public Response(int responseCode, String message) {
+        this.message = message;
         this.responseCode = responseCode;
+    }
+
+    public Response(String response) {
+        responseCode = Integer.parseInt(response.substring(0, 3));
+        message = response.substring(3, response.length());
     }
 
     public int getResponceCode() {
         return responseCode;
     }
 
-    public String getResponse() {
-        return response;
+    @Override
+    public String toString() {
+        return responseCode + " : " + message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
 }

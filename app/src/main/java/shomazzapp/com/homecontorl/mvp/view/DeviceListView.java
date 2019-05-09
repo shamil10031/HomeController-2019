@@ -1,0 +1,14 @@
+package shomazzapp.com.homecontorl.mvp.view;
+
+import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
+
+@StateStrategyType(AddToEndSingleStrategy.class)
+public interface DeviceListView extends MvpView {
+
+    void showMsg(String msg);
+
+    void setText(String str);
+
+}

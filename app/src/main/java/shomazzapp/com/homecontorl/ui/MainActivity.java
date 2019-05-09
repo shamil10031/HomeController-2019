@@ -62,9 +62,9 @@ public class MainActivity extends MvpAppCompatActivity implements FController {
             case REGISTRATION_FIELDS:
                 return RegFieldsFragment.newInstance();
             case REGISTRATION_CAMERA:
-                //return
+                return null;
             case DEVICES_LIST:
-                //return
+                return DeviceListFragment.newInstance();
             default:
                 throw new RuntimeException("Unknown screen key !");
         }

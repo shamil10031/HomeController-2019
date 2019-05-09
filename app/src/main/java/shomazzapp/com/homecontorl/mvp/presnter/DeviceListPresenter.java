@@ -11,54 +11,42 @@ import com.arellomobile.mvp.MvpPresenter;
 import java.lang.ref.WeakReference;
 
 import shomazzapp.com.homecontorl.common.ClientListener;
-import shomazzapp.com.homecontorl.common.FController;
 import shomazzapp.com.homecontorl.common.PreferencesHelper;
 import shomazzapp.com.homecontorl.common.Screens;
-import shomazzapp.com.homecontorl.common.ViewPagerController;
 import shomazzapp.com.homecontorl.mvp.model.Client;
 import shomazzapp.com.homecontorl.mvp.model.Request;
 import shomazzapp.com.homecontorl.mvp.model.Response;
-import shomazzapp.com.homecontorl.mvp.view.AuthView;
+import shomazzapp.com.homecontorl.mvp.view.DeviceListView;
 
 @InjectViewState
-public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListener {
+public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements ClientListener {
 
-    private ViewPagerController pagerController;
-    private FController fController;
     private Client client;
-    private WeakReference<Context> context;
     private PreferencesHelper prefHelper;
+    private WeakReference<Context> context;
 
-    private String login;
-
-    public AuthPresenter() {
+    public DeviceListPresenter() {
         super();
-        client = new Client(this, Client.HOST, Client.PORT);
         prefHelper = new PreferencesHelper();
+        client = new Client(this, Client.HOST, Client.PORT);
     }
 
     public void setContext(Context context){
         this.context = new WeakReference<>(context);
     }
 
-    public void setFragmentController(FController fController) {
-        this.fController = fController;
-    }
-
-    public void setViewPagerController(ViewPagerController pagerController) {
-        this.pagerController = pagerController;
+    @Override
+    public void runOnUi(@NonNull Runnable runnable) {
+        new Handler(Looper.getMainLooper()).post(runnable);
     }
 
     @Override
     public void reciveResponse(Response response) {
         runOnUi(() -> {
-            getViewState().finishAuth();
+            //getViewState().finishAuth();
             switch (response.getResponceCode()) {
                 case Response.SUCCESS:
-                    fController.addFragment(fController
-                            .createFragment(Screens.DEVICES_LIST), true);
-                    prefHelper.putString(
-                            PreferencesHelper.KEY_LOGIN, login,context.get());
+                    getViewState().setText(response.getMessage());
                     return;
                 case Response.TIMEOUT_WAITING:
                     getViewState().showMsg("Connection timeout");
@@ -81,23 +69,11 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
         });
     }
 
-    public void runOnUi(@NonNull Runnable runnable) {
-        new Handler(Looper.getMainLooper()).post(runnable);
-    }
-
-    public void signIn(String login, String password) {
-        //TODO: check login and password for empty String
-        getViewState().startAuth();
-        this.login = login;
-        client.sendRequestForResponse(Request.createAuthRequest(login, password));
-        //client.sendRequestForResponse(Request.createAviableDevicesRequest(login));
-        //client.sendRequestForResponse(Request.createHomeInfoRequest());
-    }
-
-
-    public void onSignUp() {
-        pagerController.openFragment(Screens.REGISTRATION_FIELDS);
-        //fController.addFragment(fController.createFragment(Screens.REGISTRATION_FIELDS), true);
+    public void requestDiveceList(){
+        //getViewState().startLoading();
+        client.sendRequestForResponse(Request.
+                createAviableDevicesRequest(prefHelper.getString(
+                        PreferencesHelper.KEY_LOGIN, context.get())));
     }
 
 }

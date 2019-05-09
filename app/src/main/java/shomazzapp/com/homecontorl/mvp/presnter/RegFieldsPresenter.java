@@ -18,7 +18,7 @@ public class RegFieldsPresenter extends MvpPresenter<RegFieldsView> implements C
 
     private Client client;
 
-    private void runOnUi(@NonNull Runnable runnable) {
+    public void runOnUi(@NonNull Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);
     }
 
