@@ -10,6 +10,7 @@
     android:focusable="true">
 
     <ImageView
+        android:id="@+id/im_view_auth_logo"
         android:layout_width="231dp"
         android:layout_height="81dp"
         android:layout_marginBottom="@dimen/auth_elements_margin"

@@ -1,27 +1,24 @@
 package shomazzapp.com.homecontorl.mvp.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
+import java.net.NoRouteToHostException;
 import java.net.Socket;
 
-import shomazzapp.com.homecontorl.common.Response;
+import shomazzapp.com.homecontorl.common.ClientListener;
 
 public class Client {
 
-    public static final String MSG_CODE_REGISTRATION = "2";
-    public static final String MSG_CODE_LOGIN = "0";
-
-    private static final int WAIT_TIME = 5000;
     private static final String NETWORK_TAG = "Network";
 
     public static final String HOST = "192.168.43.243";
     public static final int PORT = 8888;
+    public static final int BYTES_COUNT = 1024;
 
     private final String host;
     private final int port;
@@ -34,7 +31,7 @@ public class Client {
         this.listenner = listenner;
     }
 
-    public void postMsg(String msg) {
+    public void sendRequestForResponse(Request request) {
         Thread thread = new Thread(() -> {
             try {
                 Log.d(NETWORK_TAG, "Connecting to server...");
@@ -43,80 +40,78 @@ public class Client {
                 Log.d(NETWORK_TAG, "Connected"
                         + "\nHost : " + host
                         + "\nPort : " + port);
-                request(MSG_CODE_REGISTRATION, msg, socket);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        thread.start();
-    }
+                request(request, socket);
 
-    public void postMsgForResponse(String requestCode, String msg) {
-        Thread thread = new Thread(() -> {
-            try {
-                Log.d(NETWORK_TAG, "Connecting to server...");
-                socket = new Socket(host, port);
-
-                Log.d(NETWORK_TAG, "Connected"
-                        + "\nHost : " + host
-                        + "\nPort : " + port);
-
-                request(requestCode, msg, socket);
                 listenner.reciveResponse(getResponse(socket));
-            } catch (ConnectException e) {
+            } catch (NoRouteToHostException e) {
                 listenner.reciveResponse(new Response(
-                        Response.CONNECTION_ERROR, null));
+                        Response.NO_ROUTE_TO_HOST, null));
                 e.printStackTrace();
             } catch (IOException e) {
                 listenner.reciveResponse(new Response(
                         Response.CONNECTION_ERROR, null));
+                e.printStackTrace();
+            } finally {
+                closeSocket(socket);
+            }
+        });
+        thread.start();
+    }
+
+    public void sendRequest(Request request) {
+        Thread thread = new Thread(() -> {
+            try {
+                Log.d(NETWORK_TAG, "Connecting to server...");
+                socket = new Socket(host, port);
+
+                Log.d(NETWORK_TAG, "Connected"
+                        + "\nHost : " + host
+                        + "\nPort : " + port);
+                request(request, socket);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         thread.start();
     }
 
-    private void request(String requestCode, String msg, Socket socket) throws IOException {
-        Log.d(NETWORK_TAG, "Request msg : " + msg);
-        String request = stringDecode(msg, 1024);
-        String code = stringDecode(requestCode, 1024);
+    private void request(Request request, Socket socket) throws IOException {
+        Log.d(NETWORK_TAG, "Request msg : " + request.getRequestMsg());
         OutputStream oos = socket.getOutputStream();
-        Log.d(NETWORK_TAG, "Sending request code : " + code);
+        Log.d(NETWORK_TAG, "Sending request code : " + request.getRequestCode());
         if (!socket.isOutputShutdown())
-            oos.write(code.getBytes());
-        Log.d(NETWORK_TAG, "Sending request : " + request);
-        if (!socket.isOutputShutdown())
-            oos.write(request.getBytes());
-        oos.flush();
-        oos.close();
+            oos.write(request.getEncodeRequestCode().getBytes());
+        Log.d(NETWORK_TAG, "Sending request : " + request.getRequestMsg());
+        if (!socket.isOutputShutdown() && request.getEncodeRequestMsg() != null)
+            oos.write(request.getEncodeRequestMsg().getBytes());
+    }
+
+    private void closeSocket(@Nullable Socket socket) {
+        if (socket != null && !socket.isClosed()) {
+            try {
+                socket.getOutputStream().flush();
+                socket.getOutputStream().close();
+                socket.getInputStream().close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.w(NETWORK_TAG, "Cannot close socket! Socket is "
+                    + (socket == null ? "null" : "closed"));
+        }
     }
 
     @NonNull
     private Response getResponse(Socket socket) throws IOException {
         Log.d(NETWORK_TAG, "Waiting for response...");
-        long start = System.currentTimeMillis();
-        long elapsed = 0;
-        byte[] data = new byte[1024];
         InputStream inputStream = socket.getInputStream();
-        //TODO: нужно ли добавлять условие data.length < 1024 ?
-        while (!socket.isInputShutdown() && elapsed < WAIT_TIME) {
+        byte[] data = new byte[BYTES_COUNT];
+        if (!socket.isInputShutdown())
             inputStream.read(data);
-            elapsed = System.currentTimeMillis() - start;
-        }
         inputStream.close();
-        Response response = new Response(elapsed >= WAIT_TIME ?
-                Response.TIMEOUT_WAITING : Response.OK, new String(data));
+        Response response = new Response(Response.OK, new String(data));
         Log.d(NETWORK_TAG, "Response : " + response.getResponse());
         return response;
-    }
-
-    private String stringDecode(String word, int length) {
-        int realSize = word.length();
-        char result[] = new char[length];
-        for (int i = 0; i < realSize; i++)
-            result[i] = word.charAt(i);
-        for (int i = realSize; i < length; i++)
-            result[i] = '^';
-        return new String(result);
     }
 }

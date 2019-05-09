@@ -7,11 +7,12 @@ import android.support.annotation.NonNull;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import shomazzapp.com.homecontorl.common.ClientListener;
 import shomazzapp.com.homecontorl.common.FController;
-import shomazzapp.com.homecontorl.common.Response;
 import shomazzapp.com.homecontorl.common.Screens;
 import shomazzapp.com.homecontorl.mvp.model.Client;
-import shomazzapp.com.homecontorl.mvp.model.ClientListener;
+import shomazzapp.com.homecontorl.mvp.model.Request;
+import shomazzapp.com.homecontorl.mvp.model.Response;
 import shomazzapp.com.homecontorl.mvp.view.AuthView;
 
 @InjectViewState
@@ -35,6 +36,9 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
                 case Response.CONNECTION_ERROR:
                     getViewState().showMsg("Connection error");
                     break;
+                case Response.NO_ROUTE_TO_HOST:
+                    getViewState().showMsg("Server not founded!");
+                    break;
                 default:
                     getViewState().showMsg(response.getResponse());
 //                  fController.clearBackStack();
@@ -50,10 +54,13 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
 
     public void signIn(String login, String password) {
         //TODO: check login and password for empty String
+
         getViewState().startAuth();
         if (client == null) client = new Client(this, Client.HOST, Client.PORT);
-        client.postMsgForResponse(Client.MSG_CODE_LOGIN,login + " " + password);
+        client.sendRequestForResponse(Request.createAuthRequest(login, password));
+        //client.sendRequestForResponse(Request.createHomeInfoRequest());
     }
+
 
     public void onSignUp() {
         fController.addFragment(fController.createFragment(Screens.REGISTRATION_FIELDS), true);
