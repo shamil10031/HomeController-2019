@@ -72,7 +72,7 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
         //getViewState().startLoading();
         client.sendRequestForResponse(Request.
                 createAviableDevicesRequest(prefHelper.getString(
-                        PreferencesHelper.KEY_LOGIN, context.get())));
+                        PreferencesHelper.KEY_LOGIN, context.get())),true);
     }
 
 }

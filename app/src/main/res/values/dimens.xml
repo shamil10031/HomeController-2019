@@ -4,4 +4,8 @@
     <dimen name="et_auth_height">60dp</dimen>
     <dimen name="et_auth_padding">20dp</dimen>
     <dimen name="auth_elements_margin">30dp</dimen>
+
+    <dimen name="reg_camera_diameter_dp">500dp</dimen>
+    <integer name="reg_camera_diameter">300</integer>
+
 </resources>

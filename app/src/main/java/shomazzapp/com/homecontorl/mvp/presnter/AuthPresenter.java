@@ -93,7 +93,7 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
         getViewState().startAuth();
         this.login = login;
         this.password = password;
-        client.sendRequestForResponse(Request.createAuthRequest(login, password));
+        client.sendRequestForResponse(Request.createAuthRequest(login, password), true);
         //client.sendRequestForResponse(Request.createAviableDevicesRequest(login));
         //client.sendRequestForResponse(Request.createHomeInfoRequest());
     }

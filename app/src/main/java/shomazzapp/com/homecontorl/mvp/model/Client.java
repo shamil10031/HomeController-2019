@@ -1,9 +1,12 @@
 package shomazzapp.com.homecontorl.mvp.model;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,13 +20,14 @@ public class Client {
     private static final String NETWORK_TAG = "Network";
 
     public static final String HOST = "192.168.43.243";
-    public static final int PORT = 8884;
+    public static final int PORT = 8889;
     public static final int BYTES_COUNT = 1024;
 
     private final String host;
     private final int port;
     private Socket socket;
     private ClientListener listenner;
+    private Object lock;
 
     public Client(ClientListener listenner, String host, int port) {
         this.host = host;
@@ -31,15 +35,67 @@ public class Client {
         this.listenner = listenner;
     }
 
-    public void sendRequestForResponse(Request request) {
+    public void sendBitmap(Bitmap bitmap, boolean closeSocket) {
+
+        Log.d(NETWORK_TAG, "Send bitmap...");
         Thread thread = new Thread(() -> {
             try {
-                Log.d(NETWORK_TAG, "Connecting to server...");
-                socket = new Socket(host, port);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                byte[] byteArray = stream.toByteArray();
+                bitmap.recycle();
 
-                Log.d(NETWORK_TAG, "Connected"
-                        + "\nHost : " + host
-                        + "\nPort : " + port);
+                String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                int imageBytesCount = encoded.length();
+                Log.d(NETWORK_TAG, "Sending bytes count = " + imageBytesCount);
+                sendRequest(new Request(imageBytesCount, null), false).join();
+
+                Log.d(NETWORK_TAG, "Sending bytes [" + imageBytesCount + "]");
+                sendBytes(encoded);
+                //sendBytes(byteArray);
+                Log.d(NETWORK_TAG, "Sended!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (closeSocket) closeSocket(socket);
+            }
+        });
+        thread.start();
+    }
+
+    private void sendBytes(String bytes) throws IOException {
+        connectSocketIfNeed();
+        Log.d(NETWORK_TAG, "Start sending bytes");
+        Log.d(NETWORK_TAG, "Open OutPutStream...");
+        OutputStream oos = socket.getOutputStream();
+        Log.d(NETWORK_TAG, "Opened!");
+        if (!socket.isOutputShutdown()){
+            Log.d(NETWORK_TAG, "Sending bytes...");
+            oos.write(bytes.getBytes());
+
+        }
+        Log.d(NETWORK_TAG, "Sended!");
+    }
+
+    private void sendBytes(byte[] bytes) throws IOException {
+        connectSocketIfNeed();
+        Log.d(NETWORK_TAG, "Start sending bytes");
+        Log.d(NETWORK_TAG, "Open OutPutStream...");
+        OutputStream oos = socket.getOutputStream();
+        Log.d(NETWORK_TAG, "Opened!");
+        if (!socket.isOutputShutdown()){
+            Log.d(NETWORK_TAG, "Sending bytes...");
+            oos.write(bytes);
+
+        }
+        Log.d(NETWORK_TAG, "Sended!");
+    }
+
+    public void sendRequestForResponse(Request request, boolean closeSocket) {
+        Thread thread = new Thread(() -> {
+            try {
+                connectSocketIfNeed();
                 request(request, socket);
 
                 listenner.reciveResponse(getResponse(socket));
@@ -52,38 +108,54 @@ public class Client {
                         Response.CONNECTION_ERROR, null));
                 e.printStackTrace();
             } finally {
-                closeSocket(socket);
+                if (closeSocket)
+                    closeSocket(socket);
             }
         });
         thread.start();
     }
 
-    public void sendRequest(Request request) {
+    public Thread sendRequest(Request request, boolean closeSocket) {
         Thread thread = new Thread(() -> {
             try {
-                Log.d(NETWORK_TAG, "Connecting to server...");
-                socket = new Socket(host, port);
-
-                Log.d(NETWORK_TAG, "Connected"
-                        + "\nHost : " + host
-                        + "\nPort : " + port);
+                connectSocketIfNeed();
                 request(request, socket);
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (closeSocket)
+                    closeSocket(socket);
             }
         });
         thread.start();
+        return thread;
     }
 
     private void request(Request request, Socket socket) throws IOException {
-        Log.d(NETWORK_TAG, "Request msg : " + request.getRequestMsg());
-        OutputStream oos = socket.getOutputStream();
+        Log.d(NETWORK_TAG, "Request msg : " + request.toString());
         Log.d(NETWORK_TAG, "Sending request code : " + request.getRequestCode());
-        if (!socket.isOutputShutdown())
+        OutputStream oos = socket.getOutputStream();
+        if (!socket.isOutputShutdown()) {
             oos.write(request.getEncodeRequestCode().getBytes());
-        Log.d(NETWORK_TAG, "Sending request : " + request.getRequestMsg());
-        if (!socket.isOutputShutdown() && request.getEncodeRequestMsg() != null)
+            oos.flush();
+        }
+        Log.d(NETWORK_TAG, "Sending request msg: " + request.getRequestMsg());
+        if (!socket.isOutputShutdown() && request.getEncodeRequestMsg() != null) {
             oos.write(request.getEncodeRequestMsg().getBytes());
+            oos.flush();
+        }
+    }
+
+    public void connectSocketIfNeed() throws IOException {
+        Log.d(NETWORK_TAG, "Connecting to server...");
+        if (socket == null || socket.isClosed()) {
+            socket = new Socket(host, port);
+            Log.d(NETWORK_TAG, "Connected"
+                    + "\nHost : " + host
+                    + "\nPort : " + port);
+        } else {
+            Log.d(NETWORK_TAG, "Already connected");
+        }
     }
 
     private void closeSocket(@Nullable Socket socket) {
@@ -102,14 +174,18 @@ public class Client {
         }
     }
 
+    public Socket getSocket(){
+        return socket;
+    }
+
     @NonNull
-    private Response getResponse(Socket socket) throws IOException {
+    public Response getResponse(Socket socket) throws IOException {
         Log.d(NETWORK_TAG, "Waiting for response...");
         InputStream inputStream = socket.getInputStream();
         byte[] data = new byte[BYTES_COUNT];
         if (!socket.isInputShutdown())
             inputStream.read(data);
-        inputStream.close();
+        //inputStream.close();
         Response response = new Response(new String(data));
         Log.d(NETWORK_TAG, "Response : " + response.toString());
         return response;

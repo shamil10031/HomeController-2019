@@ -11,13 +11,32 @@
 
     <io.fotoapparat.view.CameraView
         android:id="@+id/camera_view"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="@dimen/reg_camera_diameter_dp"
+        android:layout_height="@dimen/reg_camera_diameter_dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <shomazzapp.com.homecontorl.common.HoleView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.348" />
+        android:visibility="visible"/>
+
+    <Button
+        android:id="@+id/btn_reg_start_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="start"
+        android:background="@drawable/btn_sign_in_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progress_reg"

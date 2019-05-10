@@ -53,7 +53,7 @@ public class RegFieldsPresenter extends MvpPresenter<RegFieldsView> implements C
         this.password = password;
         if (client == null) client = new Client(this, Client.HOST, Client.PORT);
         client.sendRequestForResponse(Request
-                .createRegistrationRequest(name, login, password));
+                .createRegistrationRequest(name, login, password), true);
     }
 
     public void setFragmentController(FController fController) {

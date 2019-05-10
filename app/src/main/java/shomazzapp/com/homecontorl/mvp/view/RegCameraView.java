@@ -15,4 +15,6 @@ public interface RegCameraView extends MvpView {
     @StateStrategyType(SkipStrategy.class)
     void showMsg(String msg);
 
+    @StateStrategyType(SkipStrategy.class)
+    void takePicture();
 }

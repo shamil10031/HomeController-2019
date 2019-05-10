@@ -3,23 +3,30 @@ package shomazzapp.com.homecontorl.mvp.presnter;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.NoRouteToHostException;
 
-import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
-import shomazzapp.com.homecontorl.common.interfaces.FController;
 import shomazzapp.com.homecontorl.common.PreferencesHelper;
 import shomazzapp.com.homecontorl.common.Screens;
+import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
+import shomazzapp.com.homecontorl.common.interfaces.FController;
 import shomazzapp.com.homecontorl.common.interfaces.ViewPagerController;
 import shomazzapp.com.homecontorl.mvp.model.Client;
+import shomazzapp.com.homecontorl.mvp.model.Request;
 import shomazzapp.com.homecontorl.mvp.model.Response;
 import shomazzapp.com.homecontorl.mvp.view.RegCameraView;
 
@@ -36,6 +43,32 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
         super();
         client = new Client(this, Client.HOST, Client.PORT);
         prefHelper = new PreferencesHelper();
+    }
+
+    public void onStart() {
+        getViewState().startLoading();
+        client.sendRequestForResponse(Request.createAddFhotosRequest(
+                prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get())),
+                false);
+/*        client.sendRequestForResponse(Request.createAddFhotosRequest(
+                "dd"),
+                false);*/
+    }
+
+    public Bitmap rotate(Bitmap bitmap) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(-90);
+        return Bitmap.createBitmap(bitmap, 0, 0,
+                bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public void onPictureTaken(Bitmap bitmap) {
+        Log.d("TAG", "Prepared! Sending...");
+        client.sendBitmap(rotate(bitmap), false);
+    }
+
+    public void finish() {
+
     }
 
     public void setFragmentController(FController fController) {
@@ -56,6 +89,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
 
     @Override
     public void reciveResponse(Response response) {
+        Log.d("TAG", "Response :" + response.toString());
         runOnUi(() -> {
             getViewState().finishLoading();
             switch (response.getResponceCode()) {
@@ -77,6 +111,9 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                     break;
                 default:
                     getViewState().showMsg(response.getMessage());
+                    //response.getResponceCode();
+                    //getViewState().takePicture();
+                    sendPictures();
 //                  fController.clearBackStack();
 //                  fController.addFragment(fController.createFragment(Screens.DEVICES_LIST), true);
                     break;
@@ -84,7 +121,48 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
         });
     }
 
-    public void requestPermissionIfNeed(Activity context){
+    private void sendPictures() {
+        for (int i = 0; i < 10; i++){
+            getViewState().takePicture();
+        }
+        getViewState().showMsg("Sended!");
+        Thread thread = new Thread(() -> {
+            try {
+                client.connectSocketIfNeed();
+                reciveResponse(client.getResponse(client.getSocket()));
+            } catch (IOException e) {
+                reciveResponse(new Response(
+                        Response.CONNECTION_ERROR, null));
+                e.printStackTrace();
+            }
+        });
+        //thread.start();
+/*        new CountDownTimer(5000, 50) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                getViewState().takePicture();
+            }
+
+            @Override
+            public void onFinish() {
+                getViewState().showMsg("Sended!");
+                Thread thread = new Thread(() -> {
+                    try {
+                        client.connectSocketIfNeed();
+                        reciveResponse(client.getResponse(client.getSocket()));
+                    } catch (IOException e) {
+                        reciveResponse(new Response(
+                                Response.CONNECTION_ERROR, null));
+                        e.printStackTrace();
+                    }
+                });
+                thread.start();
+            }
+        }.start();*/
+    }
+
+    public void requestPermissionIfNeed(Activity context) {
         if (ContextCompat.checkSelfPermission(context,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {

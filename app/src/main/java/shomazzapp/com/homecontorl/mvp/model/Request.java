@@ -32,6 +32,10 @@ public class Request {
                 name + divider + login + divider + password);
     }
 
+    public static Request createAddFhotosRequest(String login){
+        return new Request(ADD_PHOTOS, login);
+    }
+
     public static Request createAviableDevicesRequest(String login) {
         return new Request(AVALIABLE_DEVICES, login);
     }
