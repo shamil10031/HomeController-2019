@@ -10,14 +10,14 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import java.lang.ref.WeakReference;
 
-import shomazzapp.com.homecontorl.common.FController;
+import shomazzapp.com.homecontorl.common.interfaces.FController;
 import shomazzapp.com.homecontorl.common.PreferencesHelper;
 import shomazzapp.com.homecontorl.common.Screens;
-import shomazzapp.com.homecontorl.common.ViewPagerController;
+import shomazzapp.com.homecontorl.common.interfaces.ViewPagerController;
 import shomazzapp.com.homecontorl.mvp.model.Request;
 import shomazzapp.com.homecontorl.mvp.model.Response;
 import shomazzapp.com.homecontorl.mvp.model.Client;
-import shomazzapp.com.homecontorl.common.ClientListener;
+import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
 import shomazzapp.com.homecontorl.mvp.view.RegFieldsView;
 
 @InjectViewState
@@ -70,8 +70,7 @@ public class RegFieldsPresenter extends MvpPresenter<RegFieldsView> implements C
             getViewState().finishLoading();
             switch (response.getResponceCode()) {
                 case Response.SUCCESS:
-                    fController.addFragment(fController
-                            .createFragment(Screens.REGISTRATION_CAMERA), true);
+                    pagerController.openFragment(Screens.REGISTRATION_CAMERA);
                     prefHelper.putString(
                             PreferencesHelper.KEY_LOGIN, login, context.get());
                     prefHelper.putString(

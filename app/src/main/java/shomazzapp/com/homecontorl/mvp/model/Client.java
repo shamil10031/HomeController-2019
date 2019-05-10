@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.net.NoRouteToHostException;
 import java.net.Socket;
 
-import shomazzapp.com.homecontorl.common.ClientListener;
+import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
 
 public class Client {
 

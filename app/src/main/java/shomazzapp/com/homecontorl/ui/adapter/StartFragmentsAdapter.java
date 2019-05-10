@@ -1,4 +1,4 @@
-package shomazzapp.com.homecontorl.common;
+package shomazzapp.com.homecontorl.ui.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -6,10 +6,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.Arrays;
 
+import shomazzapp.com.homecontorl.common.Screens;
+import shomazzapp.com.homecontorl.common.interfaces.FController;
+
 public class StartFragmentsAdapter extends FragmentPagerAdapter {
 
     private static final Screens[] screens = {Screens.AUTH,
-            Screens.REGISTRATION_FIELDS};// Screens.REGISTRATION_CAMERA};
+            Screens.REGISTRATION_FIELDS, Screens.REGISTRATION_CAMERA};
     private FController controller;
     private Fragment[] fragments;
 

@@ -4,17 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
 import shomazzapp.com.homecontorl.R;
-import shomazzapp.com.homecontorl.common.FController;
+import shomazzapp.com.homecontorl.common.interfaces.FController;
 import shomazzapp.com.homecontorl.common.Screens;
-import shomazzapp.com.homecontorl.mvp.view.RegFieldsView;
 
 public class MainActivity extends MvpAppCompatActivity implements FController {
 

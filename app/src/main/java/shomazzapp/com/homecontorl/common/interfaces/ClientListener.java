@@ -1,4 +1,4 @@
-package shomazzapp.com.homecontorl.common;
+package shomazzapp.com.homecontorl.common.interfaces;
 
 import android.support.annotation.NonNull;
 

@@ -10,9 +10,8 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import java.lang.ref.WeakReference;
 
-import shomazzapp.com.homecontorl.common.ClientListener;
+import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
 import shomazzapp.com.homecontorl.common.PreferencesHelper;
-import shomazzapp.com.homecontorl.common.Screens;
 import shomazzapp.com.homecontorl.mvp.model.Client;
 import shomazzapp.com.homecontorl.mvp.model.Request;
 import shomazzapp.com.homecontorl.mvp.model.Response;

@@ -16,8 +16,8 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import shomazzapp.com.homecontorl.R;
-import shomazzapp.com.homecontorl.common.FController;
-import shomazzapp.com.homecontorl.common.ViewPagerController;
+import shomazzapp.com.homecontorl.common.interfaces.FController;
+import shomazzapp.com.homecontorl.common.interfaces.ViewPagerController;
 import shomazzapp.com.homecontorl.mvp.presnter.RegFieldsPresenter;
 import shomazzapp.com.homecontorl.mvp.view.RegFieldsView;
 
