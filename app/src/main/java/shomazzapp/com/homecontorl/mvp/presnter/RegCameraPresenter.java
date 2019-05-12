@@ -38,6 +38,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     private Client client;
     private WeakReference<Activity> context;
     private PreferencesHelper prefHelper;
+    private static final int photosCount = 300;
 
     public RegCameraPresenter() {
         super();
@@ -47,6 +48,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
 
     public void onStart() {
         getViewState().startLoading();
+        runOnUi(() -> getViewState().showMsg("Connecting..."));
         client.sendRequestForResponse(Request.createAddFhotosRequest(
                 prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get())),
                 false);
@@ -59,13 +61,30 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    public void onPictureTaken(Bitmap bitmap) {
+    public void onPictureTaken(Bitmap bitmap, boolean isLast) {
         Log.d("TAG", "Prepared! Sending...");
-        client.sendBitmap(rotate(bitmap), false);
-    }
-
-    public void finish() {
-
+        if (!isLast)
+            client.sendBitmap(rotate(bitmap), false);
+        else {
+            try {
+                client.sendBitmap(rotate(bitmap), false).join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            getViewState().hidePic();
+            getViewState().showMsg("Face registered, now relax :) It's almost done..");
+            Thread thread = new Thread(() -> {
+                try {
+                    client.connectSocketIfNeed();
+                    reciveResponse(client.getResponse(client.getSocket()));
+                } catch (IOException e) {
+                    reciveResponse(new Response(
+                            Response.CONNECTION_ERROR, null));
+                    e.printStackTrace();
+                }
+            });
+            thread.start();
+        }
     }
 
     public void setFragmentController(FController fController) {
@@ -95,45 +114,35 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                             .createFragment(Screens.DEVICES_LIST), true);
                     return;
                 case Response.TIMEOUT_WAITING:
-                    getViewState().showMsg("Connection timeout");
+                    getViewState().showMsg("Connection timeout. Try later");
                     break;
                 case Response.CONNECTION_ERROR:
-                    getViewState().showMsg("Connection error");
+                    getViewState().showMsg("Connection error. Try later");
                     break;
                 case Response.NO_ROUTE_TO_HOST:
-                    getViewState().showMsg("Server not founded!");
+                    getViewState().showMsg("Server not founded. " +
+                            "You have to be connected to same host with server");
                     break;
                 case Response.ERROR:
                     getViewState().showMsg("Can't register new User. Try later");
                     break;
                 default:
-                    getViewState().showMsg(response.getMessage());
-                    //response.getResponceCode();
-                    //getViewState().takePicture();
+                    getViewState().showMsg("Face scanning... Follow instructions :)");
+                    getViewState().showPic();
+                    getViewState().startLoading();
                     sendPictures();
-//                  fController.clearBackStack();
-//                  fController.addFragment(fController.createFragment(Screens.DEVICES_LIST), true);
                     break;
             }
         });
     }
 
     private void sendPictures() {
-        for (int i = 0; i < 10; i++){
-            getViewState().takePicture();
+        for (int i = 0; i < photosCount; i++){
+            if (i+1 == photosCount)
+                getViewState().takePicture(true);
+            else
+                getViewState().takePicture(false);
         }
-        getViewState().showMsg("Sended!");
-        Thread thread = new Thread(() -> {
-            try {
-                client.connectSocketIfNeed();
-                reciveResponse(client.getResponse(client.getSocket()));
-            } catch (IOException e) {
-                reciveResponse(new Response(
-                        Response.CONNECTION_ERROR, null));
-                e.printStackTrace();
-            }
-        });
-        //thread.start();
 /*        new CountDownTimer(5000, 50) {
 
             @Override

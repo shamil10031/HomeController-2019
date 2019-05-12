@@ -1,6 +1,8 @@
 package shomazzapp.com.homecontorl.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -8,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -35,6 +40,9 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
 
     private Fotoapparat fotoapparat;
     private CameraView cameraView;
+    private ProgressBar progressBar;
+    private TextView textView;
+    private ImageView imViewInstruction;
 
     private static final int LAYOUT = R.layout.fragment_reg_camera;
 
@@ -63,25 +71,41 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     }
 
     @Override
-    public void takePicture() {
+    public void takePicture(boolean isLast) {
         Log.d("TAG", "Taking picture...");
         if (fotoapparat != null) {
             PhotoResult photoResult = fotoapparat.takePicture();
             Log.d("TAG", "Picture taken! Preparing...");
             photoResult.toBitmap().whenDone(bitmapPhoto ->
-                    presenter.onPictureTaken(bitmapPhoto.bitmap));
+                    presenter.onPictureTaken(bitmapPhoto.bitmap, isLast));
         } else {
             Log.e("TAG", "Fotoapparat is null");
         }
     }
 
+    @Override
+    public void showPic() {
+        imViewInstruction.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hidePic() {
+        imViewInstruction.setVisibility(View.INVISIBLE);
+    }
+
     private void init(View view) {
+        imViewInstruction = (ImageView) view.findViewById(R.id.im_view_reg_instr);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_reg_camera);
         cameraView = (CameraView) view.findViewById(R.id.camera_view);
+        textView = (TextView) view.findViewById(R.id.tv_reg_camera);
+        textView.setText("");
+        hidePic();
+        finishLoading();
         fotoapparat = Fotoapparat
                 .with(getContext())
                 .into(cameraView)           // view which will draw the camera preview
                 .previewScaleType(ScaleType.CenterInside)  // we want the preview to fill the view
-                .photoResolution(ResolutionSelectorsKt.lowestResolution())   // we want to have the biggest photo possible
+                .photoResolution(ResolutionSelectorsKt.highestResolution())   // we want to have the biggest photo possible
                 .lensPosition(LensPositionSelectorsKt.front())       // we want back camera
                 .focusMode(SelectorsKt.firstAvailable(  // (optional) use the first focus mode which is supported by device
                         FocusModeSelectorsKt.continuousFocusPicture(),
@@ -93,7 +117,6 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
                         LoggersKt.fileLogger(getContext())    // ... and to file
                 ))
                 .build();
-
         Button btnStart = (Button) view.findViewById(R.id.btn_reg_start_camera);
         btnStart.setOnClickListener((View.OnClickListener) v -> presenter.onStart());
     }
@@ -115,20 +138,22 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
         super.onDestroy();
         fotoapparat = null;
         cameraView = null;
+        textView = null;
+        progressBar = null;
     }
 
     @Override
     public void startLoading() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void finishLoading() {
-
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showMsg(String msg) {
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+        textView.setText(msg);
     }
 }

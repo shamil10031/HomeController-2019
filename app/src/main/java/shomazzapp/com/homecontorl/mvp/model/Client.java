@@ -22,7 +22,7 @@ public class Client {
     private static final String NETWORK_TAG = "Network";
 
     public static final String HOST = "192.168.43.243";
-    public static final int PORT = 8887;
+    public static final int PORT = 8880;
     public static final int BYTES_COUNT = 1024;
 
     private final String host;
@@ -37,7 +37,7 @@ public class Client {
         this.listenner = listenner;
     }
 
-    public void sendBitmap(Bitmap bitmap, boolean closeSocket) {
+    public Thread sendBitmap(Bitmap bitmap, boolean closeSocket) {
 
         Log.d(NETWORK_TAG, "Send bitmap...");
         Thread thread = new Thread(() -> {
@@ -64,6 +64,7 @@ public class Client {
             }
         });
         thread.start();
+        return thread;
     }
 
     private void sendBytes(String bytes) throws IOException {
