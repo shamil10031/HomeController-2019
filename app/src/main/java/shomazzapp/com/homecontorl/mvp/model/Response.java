@@ -19,8 +19,12 @@ public class Response {
     }
 
     public Response(String response) {
-        responseCode = Integer.parseInt(response.substring(0, 3));
-        message = response.substring(3, response.length());
+        if (response.length() < 1) {
+            responseCode = ERROR;
+        } else {
+            responseCode = Integer.parseInt(response.substring(0, 3));
+            message = response.substring(3, response.length());
+        }
     }
 
     public int getResponceCode() {

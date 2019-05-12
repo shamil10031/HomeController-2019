@@ -19,12 +19,23 @@ public class Device {
     private String description;
     @SerializedName("item_photo")
     private String photoAddress;
+    @SerializedName("is_item_on")
+    private boolean isOn;
 
-    public Device(int id, String name, String description, String photoAddress) {
+    public Device(int id, String name, String description, String photoAddress, boolean isOn) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.photoAddress = photoAddress;
+        this.isOn = isOn;
+    }
+
+    public void changeToggle(){
+        isOn = (!isOn);
+    }
+
+    public boolean isOn() {
+        return isOn;
     }
 
     public int getId() {

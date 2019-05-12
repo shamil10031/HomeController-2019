@@ -55,9 +55,14 @@ public class DeviceListFragment extends MvpAppCompatFragment implements DeviceLi
         return view;
     }
 
+    @Override
+    public void changeDeviceToggle(int id) {
+        adapter.changeDeviceToggle(id);
+    }
+
     private void init(View view) {
         recycler = (RecyclerView) view.findViewById(R.id.recycler_devices);
-        adapter = new DevicesAdapter(getActivity());
+        adapter = new DevicesAdapter(getActivity(), presenter);
         recycler.setAdapter(adapter);
         recycler.addItemDecoration(new ItemDecoration(getContext(), R.dimen.recycler_item_margin));
 

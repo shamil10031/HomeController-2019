@@ -11,6 +11,7 @@ public class Request {
     public static final int ADD_PHOTOS = 4;
     public static final int HOME_INFO = 5;
     public static final int AVALIABLE_DEVICES = 6;
+    public static final int TOGLE_DEVICE = 7;
 
     private static final String divider = " ";
 
@@ -21,6 +22,10 @@ public class Request {
     public Request(int requestCode, @Nullable String requestMsg) {
         this.requestMsg = requestMsg;
         this.requestCode = requestCode;
+    }
+
+    public static Request createToggleDevice(int id) {
+        return new Request(TOGLE_DEVICE, id+"");
     }
 
     public static Request createAuthRequest(String login, String password) {

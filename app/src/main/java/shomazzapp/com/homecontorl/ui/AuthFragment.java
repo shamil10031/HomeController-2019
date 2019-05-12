@@ -67,6 +67,8 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
         btnSignUp.setOnClickListener(v -> onSignUp());
     }
 
+    //private
+
     private void onSingIn() {
         clearFocuses();
         presenter.signIn(etLogin.getText().toString(),

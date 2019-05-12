@@ -13,7 +13,7 @@
 
         <ImageView
             android:id="@+id/im_view_device"
-            android:layout_width="118dp"
+            android:layout_width="110dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/device_item_padding"
             tools:src="@tools:sample/avatars" />
@@ -40,22 +40,34 @@
                 android:maxLines="4"
                 android:textColor="#212121"
                 android:textSize="15sp"
-                tools:text="FLJndskfsjnsdkj n f kdsjfkndsjsdfkjnsdfnsdkjfnkdsjfnsdkjnfksdjnnsdkfjnsdfs
-				lkmrlknmflksnkljnjd" />
+                tools:text="FLJndskfsjnsdkj n f jklnkjn lkn" />
 
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:layout_marginStart="10dp"
                     android:id="@+id/tv_device_id"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="end|bottom"
                     android:maxLines="1"
                     android:textColor="#212121"
                     android:textStyle="bold|italic"
                     tools:text="id: 1" />
+
+                <TextView
+                    android:id="@+id/tv_device_is_on"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="end|bottom"
+                    android:maxLines="1"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="#212121"
+                    android:textStyle="bold|italic"
+                    tools:text="off" />
 
             </LinearLayout>
 

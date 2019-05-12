@@ -24,18 +24,14 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
     private Client client;
     private PreferencesHelper prefHelper;
     private WeakReference<Context> context;
-
+    private int toggleDeviceId;
+    private int requestCode;
 
     private static final String testJson = "[" +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}" +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"true\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"false\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"false\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"true\"}, " +
             "]";
 
 
@@ -57,10 +53,14 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
     @Override
     public void reciveResponse(Response response) {
         runOnUi(() -> {
+            //getViewState().setDevices(Device.getDevicesFromJson(testJson));
             //getViewState().finishAuth();
             switch (response.getResponceCode()) {
                 case Response.SUCCESS:
-                    getViewState().setDevices(Device.getDevicesFromJson(response.getMessage()));
+                    if (requestCode == Request.AVALIABLE_DEVICES)
+                        getViewState().setDevices(Device.getDevicesFromJson(response.getMessage()));
+                    if (requestCode == Request.TOGLE_DEVICE)
+                        getViewState().changeDeviceToggle(toggleDeviceId);
                     return;
                 case Response.TIMEOUT_WAITING:
                     getViewState().showMsg("Connection timeout");
@@ -72,24 +72,30 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
                     getViewState().showMsg("Server not founded!");
                     break;
                 case Response.ERROR:
-                    getViewState().showMsg("Incorrect login/password");
+                    getViewState().showMsg("Error!");
                     break;
                 default:
                     getViewState().showMsg(response.getMessage());
-//                  fController.clearBackStack();
-//                  fController.addFragment(fController.createFragment(Screens.DEVICES_LIST), true);
                     break;
             }
         });
     }
 
+    public void toggleDevice(int id) {
+        //getViewState().startLoading();
+        requestCode = Request.TOGLE_DEVICE;
+        toggleDeviceId = id;
+        client.sendRequestForResponse(Request.createToggleDevice(id), true);
+    }
+
     public void requestDiveceList() {
         //reciveResponse(new Response(200+testJson));
         //getViewState().startLoading();
+        requestCode = Request.AVALIABLE_DEVICES;
         client.sendRequestForResponse(Request.
-                createAviableDevicesRequest(
-                        //"test"),
-                        prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get())),
+                        createAviableDevicesRequest(
+                                //"test"),
+                                prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get())),
                 true);
     }
 

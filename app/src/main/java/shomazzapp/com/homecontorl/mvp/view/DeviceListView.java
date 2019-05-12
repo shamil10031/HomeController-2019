@@ -15,4 +15,6 @@ public interface DeviceListView extends MvpView {
 
     void setDevices(ArrayList <Device> devices);
 
+    void changeDeviceToggle(int id);
+
 }
