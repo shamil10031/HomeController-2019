@@ -90,12 +90,12 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
 
     public void signIn(String login, String password) {
         //TODO: check login and password for empty String
+        /*fController.addFragment(fController
+                .createFragment(Screens.DEVICES_LIST), true);*/
         getViewState().startAuth();
         this.login = login;
         this.password = password;
         client.sendRequestForResponse(Request.createAuthRequest(login, password), true);
-        //client.sendRequestForResponse(Request.createAviableDevicesRequest(login));
-        //client.sendRequestForResponse(Request.createHomeInfoRequest());
     }
 
     public void onSignUp() {

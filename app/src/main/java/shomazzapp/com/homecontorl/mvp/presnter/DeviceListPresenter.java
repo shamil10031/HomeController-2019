@@ -10,9 +10,10 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import java.lang.ref.WeakReference;
 
-import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
 import shomazzapp.com.homecontorl.common.PreferencesHelper;
+import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
 import shomazzapp.com.homecontorl.mvp.model.Client;
+import shomazzapp.com.homecontorl.mvp.model.Device;
 import shomazzapp.com.homecontorl.mvp.model.Request;
 import shomazzapp.com.homecontorl.mvp.model.Response;
 import shomazzapp.com.homecontorl.mvp.view.DeviceListView;
@@ -24,13 +25,27 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
     private PreferencesHelper prefHelper;
     private WeakReference<Context> context;
 
+
+    private static final String testJson = "[" +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\"}" +
+            "]";
+
+
     public DeviceListPresenter() {
         super();
         prefHelper = new PreferencesHelper();
         client = new Client(this, Client.HOST, Client.PORT);
     }
 
-    public void setContext(Context context){
+    public void setContext(Context context) {
         this.context = new WeakReference<>(context);
     }
 
@@ -45,7 +60,7 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
             //getViewState().finishAuth();
             switch (response.getResponceCode()) {
                 case Response.SUCCESS:
-                    getViewState().setText(response.getMessage());
+                    getViewState().setDevices(Device.getDevicesFromJson(response.getMessage()));
                     return;
                 case Response.TIMEOUT_WAITING:
                     getViewState().showMsg("Connection timeout");
@@ -68,11 +83,14 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
         });
     }
 
-    public void requestDiveceList(){
+    public void requestDiveceList() {
+        //reciveResponse(new Response(200+testJson));
         //getViewState().startLoading();
         client.sendRequestForResponse(Request.
-                createAviableDevicesRequest(prefHelper.getString(
-                        PreferencesHelper.KEY_LOGIN, context.get())),true);
+                createAviableDevicesRequest(
+                        //"test"),
+                        prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get())),
+                true);
     }
 
 }

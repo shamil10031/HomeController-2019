@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.NoRouteToHostException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
 
@@ -20,7 +22,7 @@ public class Client {
     private static final String NETWORK_TAG = "Network";
 
     public static final String HOST = "192.168.43.243";
-    public static final int PORT = 8889;
+    public static final int PORT = 8887;
     public static final int BYTES_COUNT = 1024;
 
     private final String host;
@@ -70,7 +72,7 @@ public class Client {
         Log.d(NETWORK_TAG, "Open OutPutStream...");
         OutputStream oos = socket.getOutputStream();
         Log.d(NETWORK_TAG, "Opened!");
-        if (!socket.isOutputShutdown()){
+        if (!socket.isOutputShutdown()) {
             Log.d(NETWORK_TAG, "Sending bytes...");
             oos.write(bytes.getBytes());
 
@@ -84,7 +86,7 @@ public class Client {
         Log.d(NETWORK_TAG, "Open OutPutStream...");
         OutputStream oos = socket.getOutputStream();
         Log.d(NETWORK_TAG, "Opened!");
-        if (!socket.isOutputShutdown()){
+        if (!socket.isOutputShutdown()) {
             Log.d(NETWORK_TAG, "Sending bytes...");
             oos.write(bytes);
 
@@ -174,7 +176,7 @@ public class Client {
         }
     }
 
-    public Socket getSocket(){
+    public Socket getSocket() {
         return socket;
     }
 
@@ -186,8 +188,15 @@ public class Client {
         if (!socket.isInputShutdown())
             inputStream.read(data);
         //inputStream.close();
-        Response response = new Response(new String(data));
+        Response response = new Response(new String(clearByteArray(data), StandardCharsets.UTF_8));
         Log.d(NETWORK_TAG, "Response : " + response.toString());
         return response;
     }
+
+    public byte[] clearByteArray(byte[] bytes) {
+        int i = bytes.length - 1;
+        while (i >= 0 && bytes[i] == 0) --i;
+        return Arrays.copyOf(bytes, i + 1);
+    }
+
 }

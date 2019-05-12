@@ -50,9 +50,6 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
         client.sendRequestForResponse(Request.createAddFhotosRequest(
                 prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get())),
                 false);
-/*        client.sendRequestForResponse(Request.createAddFhotosRequest(
-                "dd"),
-                false);*/
     }
 
     public Bitmap rotate(Bitmap bitmap) {
