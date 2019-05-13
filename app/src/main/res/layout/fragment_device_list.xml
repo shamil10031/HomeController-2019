@@ -5,7 +5,8 @@
     android:animateLayoutChanges="true"
     android:background="@color/colorPrimaryDark"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:padding="10dp">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_devices"

@@ -8,9 +8,13 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface RegCameraView extends MvpView {
 
-    void startLoading();
+    void showHorProgressBar();
 
-    void finishLoading();
+    void hideHorProgressBar();
+
+    void showProgressBar();
+
+    void hideProgressBar();
 
     @StateStrategyType(SkipStrategy.class)
     void showMsg(String msg);
@@ -21,4 +25,6 @@ public interface RegCameraView extends MvpView {
     void showPic();
 
     void hidePic();
+
+    void updateLoadingBar(int value);
 }

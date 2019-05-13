@@ -86,7 +86,6 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.MyViewHo
         for (int i =0; i < devices.size(); i++){
             if (devices.get(i).getId() == id) {
                 devices.get(i).changeToggle();
-                //notifyItemChanged(i);
                 notifyDataSetChanged();
                 break;
             }

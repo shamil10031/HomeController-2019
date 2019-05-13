@@ -57,10 +57,15 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
             //getViewState().finishAuth();
             switch (response.getResponceCode()) {
                 case Response.SUCCESS:
-                    if (requestCode == Request.AVALIABLE_DEVICES)
+                    if (requestCode == Request.AVALIABLE_DEVICES) {
                         getViewState().setDevices(Device.getDevicesFromJson(response.getMessage()));
-                    if (requestCode == Request.TOGLE_DEVICE)
+                        requestHomeInfo();
+                    }
+                    else if (requestCode == Request.TOGLE_DEVICE)
                         getViewState().changeDeviceToggle(toggleDeviceId);
+                    else if (requestCode == Request.HOME_INFO)
+                        getViewState().showMsg("Temperature: " + response.getMessage().split(" ")[0]
+                        + ", Humidity: " + response.getMessage().split(" ")[1]);
                     return;
                 case Response.TIMEOUT_WAITING:
                     getViewState().showMsg("Connection timeout");
@@ -81,8 +86,13 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
         });
     }
 
+    public void requestHomeInfo(){
+        requestCode = Request.HOME_INFO;
+        client.sendRequestForResponse(Request.createHomeInfoRequest(),true);
+    }
+
     public void toggleDevice(int id) {
-        //getViewState().startLoading();
+        //getViewState().showProgressBar();
         requestCode = Request.TOGLE_DEVICE;
         toggleDeviceId = id;
         client.sendRequestForResponse(Request.createToggleDevice(id), true);
@@ -90,7 +100,7 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
 
     public void requestDiveceList() {
         //reciveResponse(new Response(200+testJson));
-        //getViewState().startLoading();
+        //getViewState().showProgressBar();
         requestCode = Request.AVALIABLE_DEVICES;
         client.sendRequestForResponse(Request.
                         createAviableDevicesRequest(

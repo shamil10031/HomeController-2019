@@ -1,8 +1,6 @@
 package shomazzapp.com.homecontorl.ui;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -41,6 +38,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     private Fotoapparat fotoapparat;
     private CameraView cameraView;
     private ProgressBar progressBar;
+    private ProgressBar horProgressBar;
     private TextView textView;
     private ImageView imViewInstruction;
 
@@ -94,31 +92,33 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     }
 
     private void init(View view) {
+        horProgressBar = (ProgressBar) view.findViewById(R.id.hor_progress_reg_camera);
         imViewInstruction = (ImageView) view.findViewById(R.id.im_view_reg_instr);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_reg_camera);
         cameraView = (CameraView) view.findViewById(R.id.camera_view);
         textView = (TextView) view.findViewById(R.id.tv_reg_camera);
         textView.setText("");
         hidePic();
-        finishLoading();
-        fotoapparat = Fotoapparat
-                .with(getContext())
-                .into(cameraView)           // view which will draw the camera preview
-                .previewScaleType(ScaleType.CenterInside)  // we want the preview to fill the view
-                .photoResolution(ResolutionSelectorsKt.highestResolution())   // we want to have the biggest photo possible
-                .lensPosition(LensPositionSelectorsKt.front())       // we want back camera
-                .focusMode(SelectorsKt.firstAvailable(  // (optional) use the first focus mode which is supported by device
-                        FocusModeSelectorsKt.continuousFocusPicture(),
-                        FocusModeSelectorsKt.autoFocus(),        // in case if continuous focus is not available on device, auto focus will be used
-                        FocusModeSelectorsKt.fixed()             // if even auto focus is not available - fixed focus mode will be used
-                ))
-                .logger(LoggersKt.loggers(            // (optional) we want to log camera events in 2 places at once
-                        LoggersKt.logcat(),           // ... in logcat
-                        LoggersKt.fileLogger(getContext())    // ... and to file
-                ))
-                .build();
+        hideProgressBar();
+        initFotoapparat();
         Button btnStart = (Button) view.findViewById(R.id.btn_reg_start_camera);
         btnStart.setOnClickListener((View.OnClickListener) v -> presenter.onStart());
+    }
+
+    @Override
+    public void showHorProgressBar() {
+        horProgressBar.setVisibility(View.VISIBLE);
+        horProgressBar.setMax(presenter.photosCount);
+    }
+
+    @Override
+    public void hideHorProgressBar() {
+        horProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void updateLoadingBar(int value) {
+        horProgressBar.setProgress(value);
     }
 
     @Override
@@ -143,12 +143,12 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     }
 
     @Override
-    public void startLoading() {
+    public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void finishLoading() {
+    public void hideProgressBar() {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
@@ -156,4 +156,24 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     public void showMsg(String msg) {
         textView.setText(msg);
     }
+
+    private void initFotoapparat(){
+        fotoapparat = Fotoapparat
+                .with(getContext())
+                .into(cameraView)           // view which will draw the camera preview
+                .previewScaleType(ScaleType.CenterInside)  // we want the preview to fill the view
+                .photoResolution(ResolutionSelectorsKt.highestResolution())   // we want to have the biggest photo possible
+                .lensPosition(LensPositionSelectorsKt.front())       // we want back camera
+                .focusMode(SelectorsKt.firstAvailable(  // (optional) use the first focus mode which is supported by device
+                        FocusModeSelectorsKt.continuousFocusPicture(),
+                        FocusModeSelectorsKt.autoFocus(),        // in case if continuous focus is not available on device, auto focus will be used
+                        FocusModeSelectorsKt.fixed()             // if even auto focus is not available - fixed focus mode will be used
+                ))
+                .logger(LoggersKt.loggers(            // (optional) we want to log camera events in 2 places at once
+                        LoggersKt.logcat(),           // ... in logcat
+                        LoggersKt.fileLogger(getContext())    // ... and to file
+                ))
+                .build();
+    }
+
 }

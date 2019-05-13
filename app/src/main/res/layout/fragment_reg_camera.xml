@@ -20,13 +20,13 @@
 
     <ImageView
         android:id="@+id/im_view_reg_instr"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="330dp"
+        android:layout_height="330dp"
+        android:src="@mipmap/head_around"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@android:drawable/ic_lock_idle_low_battery"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <shomazzapp.com.homecontorl.common.HoleView
         android:layout_width="match_parent"
@@ -62,14 +62,23 @@
 
     <ProgressBar
         android:id="@+id/progress_reg_camera"
-        android:layout_width="@dimen/reg_camera_diameter_dp"
-        android:layout_height="@dimen/reg_camera_diameter_dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:fitsSystemWindows="true"
         android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
+
+    <ProgressBar
+        android:id="@+id/hor_progress_reg_camera"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:indeterminate="false"
+        app:layout_constraintBottom_toTopOf="@+id/btn_reg_start_camera" />
 
 </android.support.constraint.ConstraintLayout>

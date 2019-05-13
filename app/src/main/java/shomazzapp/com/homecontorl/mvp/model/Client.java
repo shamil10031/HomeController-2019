@@ -14,6 +14,7 @@ import java.net.NoRouteToHostException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
 
@@ -31,10 +32,13 @@ public class Client {
     private ClientListener listenner;
     private Object lock;
 
+    private AtomicInteger photosLoaded = new AtomicInteger();
+
     public Client(ClientListener listenner, String host, int port) {
         this.host = host;
         this.port = port;
         this.listenner = listenner;
+        photosLoaded.set(0);
     }
 
     public Thread sendBitmap(Bitmap bitmap, boolean closeSocket) {
@@ -57,6 +61,8 @@ public class Client {
                 sendBytes(encoded);
                 //sendBytes(byteArray);
                 Log.d(NETWORK_TAG, "Sended!");
+                listenner.reciveResponse(new Response(Response.BITMAP_SENDED,
+                        photosLoaded.incrementAndGet()+""));
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

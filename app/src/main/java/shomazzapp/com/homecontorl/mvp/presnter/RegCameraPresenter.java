@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -18,7 +17,6 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.net.NoRouteToHostException;
 
 import shomazzapp.com.homecontorl.common.PreferencesHelper;
 import shomazzapp.com.homecontorl.common.Screens;
@@ -38,7 +36,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     private Client client;
     private WeakReference<Activity> context;
     private PreferencesHelper prefHelper;
-    private static final int photosCount = 300;
+    public final int photosCount = 300;
 
     public RegCameraPresenter() {
         super();
@@ -47,7 +45,8 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     }
 
     public void onStart() {
-        getViewState().startLoading();
+        getViewState().showProgressBar();
+        getViewState().hideHorProgressBar();
         runOnUi(() -> getViewState().showMsg("Connecting..."));
         client.sendRequestForResponse(Request.createAddFhotosRequest(
                 prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get())),
@@ -72,6 +71,8 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                 e.printStackTrace();
             }
             getViewState().hidePic();
+            getViewState().hideHorProgressBar();
+            getViewState().showProgressBar();
             getViewState().showMsg("Face registered, now relax :) It's almost done..");
             Thread thread = new Thread(() -> {
                 try {
@@ -107,29 +108,42 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     public void reciveResponse(Response response) {
         Log.d("TAG", "Response :" + response.toString());
         runOnUi(() -> {
-            getViewState().finishLoading();
             switch (response.getResponceCode()) {
                 case Response.SUCCESS:
+                    getViewState().hideProgressBar();
+                    getViewState().hideHorProgressBar();
                     fController.addFragment(fController
                             .createFragment(Screens.DEVICES_LIST), true);
                     return;
                 case Response.TIMEOUT_WAITING:
+                    getViewState().hideProgressBar();
+                    getViewState().hideHorProgressBar();
                     getViewState().showMsg("Connection timeout. Try later");
                     break;
                 case Response.CONNECTION_ERROR:
+                    getViewState().hideProgressBar();
+                    getViewState().hideHorProgressBar();
                     getViewState().showMsg("Connection error. Try later");
                     break;
                 case Response.NO_ROUTE_TO_HOST:
+                    getViewState().hideProgressBar();
+                    getViewState().hideHorProgressBar();
                     getViewState().showMsg("Server not founded. " +
                             "You have to be connected to same host with server");
                     break;
                 case Response.ERROR:
+                    getViewState().hideProgressBar();
+                    getViewState().hideHorProgressBar();
                     getViewState().showMsg("Can't register new User. Try later");
+                    break;
+                case Response.BITMAP_SENDED:
+                    getViewState().updateLoadingBar(Integer.parseInt(response.getMessage()));
                     break;
                 default:
                     getViewState().showMsg("Face scanning... Follow instructions :)");
                     getViewState().showPic();
-                    getViewState().startLoading();
+                    getViewState().hideProgressBar();
+                    getViewState().showHorProgressBar();
                     sendPictures();
                     break;
             }
@@ -137,8 +151,8 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     }
 
     private void sendPictures() {
-        for (int i = 0; i < photosCount; i++){
-            if (i+1 == photosCount)
+        for (int i = 0; i < photosCount; i++) {
+            if (i + 1 == photosCount)
                 getViewState().takePicture(true);
             else
                 getViewState().takePicture(false);
