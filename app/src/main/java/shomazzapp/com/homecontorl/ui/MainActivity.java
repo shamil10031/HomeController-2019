@@ -29,7 +29,7 @@ public class MainActivity extends MvpAppCompatActivity implements FController {
     public void onBackPressed() {
         //TODO: remove Toast
         int count = getSupportFragmentManager().getBackStackEntryCount();
-        Toast.makeText(this, "Count before onBack = " + count, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Count before onBack = " + count, Toast.LENGTH_LONG).show();
         if (count == 1) getSupportFragmentManager().popBackStack();
         super.onBackPressed();
     }

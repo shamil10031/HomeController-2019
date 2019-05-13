@@ -36,7 +36,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     private Client client;
     private WeakReference<Activity> context;
     private PreferencesHelper prefHelper;
-    public final int photosCount = 300;
+    public final int photosCount = 10;
 
     public RegCameraPresenter() {
         super();

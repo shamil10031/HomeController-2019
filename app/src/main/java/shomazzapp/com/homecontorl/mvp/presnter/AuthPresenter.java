@@ -98,6 +98,21 @@ public class AuthPresenter extends MvpPresenter<AuthView> implements ClientListe
         client.sendRequestForResponse(Request.createAuthRequest(login, password), true);
     }
 
+    public void showLoginAndPass(){
+        String login = prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get());
+        String pass = prefHelper.getString(PreferencesHelper.KEY_PASSWORD, context.get());
+        getViewState().showLoginAndPass(login, pass);
+    }
+
+    public void signInFromSharedPref() {
+        /*fController.addFragment(fController
+                .createFragment(Screens.DEVICES_LIST), true);*/
+        getViewState().startAuth();
+        this.login = prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get());
+        this.password = prefHelper.getString(PreferencesHelper.KEY_PASSWORD, context.get());
+        client.sendRequestForResponse(Request.createAuthRequest(login, password), true);
+    }
+
     public void onSignUp() {
         pagerController.openFragment(Screens.REGISTRATION_FIELDS);
         //fController.addFragment(fController.createFragment(Screens.REGISTRATION_FIELDS), true);

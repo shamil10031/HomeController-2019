@@ -73,6 +73,7 @@
         tools:visibility="visible" />
 
     <ProgressBar
+        android:visibility="gone"
         android:id="@+id/hor_progress_reg_camera"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"

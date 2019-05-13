@@ -38,6 +38,8 @@ public class RegFieldsPresenter extends MvpPresenter<RegFieldsView> implements C
         prefHelper = new PreferencesHelper();
     }
 
+
+
     public void runOnUi(@NonNull Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);
     }

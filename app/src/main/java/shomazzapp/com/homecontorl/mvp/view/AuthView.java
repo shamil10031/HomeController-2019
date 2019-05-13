@@ -15,4 +15,6 @@ public interface AuthView extends MvpView {
     @StateStrategyType(SkipStrategy.class)
     void showMsg(String msg);
 
+    void showLoginAndPass(String login, String password);
+
 }

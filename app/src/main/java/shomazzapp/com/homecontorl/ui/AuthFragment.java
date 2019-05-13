@@ -45,6 +45,14 @@ public class AuthFragment extends MvpAppCompatFragment implements AuthView {
         presenter.setViewPagerController((ViewPagerController)
                 fController.getFragmentByTag(StartFragment.class.toString()));
         presenter.setContext(getActivity());
+        presenter.showLoginAndPass();
+        //presenter.signInFromSharedPref();
+    }
+
+    @Override
+    public void showLoginAndPass(String login, String password) {
+        etLogin.setText(login);
+        etPassword.setText(password);
     }
 
     @Nullable
