@@ -36,7 +36,9 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     private Client client;
     private WeakReference<Activity> context;
     private PreferencesHelper prefHelper;
-    public final int photosCount = 10;
+    public int photosCount;
+    private int photosSended;
+    private int UdpPort;
 
     public RegCameraPresenter() {
         super();
@@ -47,6 +49,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     public void onStart() {
         getViewState().showProgressBar();
         getViewState().hideHorProgressBar();
+        photosSended = 0;
         runOnUi(() -> getViewState().showMsg("Connecting..."));
         client.sendRequestForResponse(Request.createAddFhotosRequest(
                 prefHelper.getString(PreferencesHelper.KEY_LOGIN, context.get())),
@@ -63,7 +66,16 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     public void onPictureTaken(Bitmap bitmap, boolean isLast) {
         Log.d("TAG", "Prepared! Sending...");
         if (!isLast)
-            client.sendBitmap(rotate(bitmap), false);
+            try {
+                client.sendBitmap(rotate(bitmap), false).join();
+                photosSended++;
+                if (photosSended + 1 == photosCount)
+                    getViewState().takePicture(true);
+                else
+                    getViewState().takePicture(false);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         else {
             try {
                 client.sendBitmap(rotate(bitmap), false).join();
@@ -139,11 +151,13 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                 case Response.BITMAP_SENDED:
                     getViewState().updateLoadingBar(Integer.parseInt(response.getMessage()));
                     break;
-                default:
+                case 201:
                     getViewState().showMsg("Face scanning... Follow instructions :)");
-                    getViewState().showPic();
+                    //getViewState().showPic();
                     getViewState().hideProgressBar();
                     getViewState().showHorProgressBar();
+                    photosCount = Integer.parseInt(response.getMessage().split(" ")[0]);
+//                    client.setUdpPort(Integer.parseInt(response.getMessage().split(" ")[1]));
                     sendPictures();
                     break;
             }
@@ -151,57 +165,18 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     }
 
     private void sendPictures() {
-        for (int i = 0; i < photosCount; i++) {
-            if (i + 1 == photosCount)
-                getViewState().takePicture(true);
-            else
-                getViewState().takePicture(false);
-        }
-/*        new CountDownTimer(5000, 50) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                getViewState().takePicture();
-            }
-
-            @Override
-            public void onFinish() {
-                getViewState().showMsg("Sended!");
-                Thread thread = new Thread(() -> {
-                    try {
-                        client.connectSocketIfNeed();
-                        reciveResponse(client.getResponse(client.getSocket()));
-                    } catch (IOException e) {
-                        reciveResponse(new Response(
-                                Response.CONNECTION_ERROR, null));
-                        e.printStackTrace();
-                    }
-                });
-                thread.start();
-            }
-        }.start();*/
+        getViewState().takePicture(false);
     }
 
     public void requestPermissionIfNeed(Activity context) {
         if (ContextCompat.checkSelfPermission(context,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(context,
                     Manifest.permission.CAMERA)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
             } else {
-                // No explanation needed; request the permission
                 ActivityCompat.requestPermissions(context,
                         new String[]{Manifest.permission.CAMERA}, 0);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         }
     }

@@ -62,7 +62,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(LAYOUT, container, false);
         init(view);
         return view;
@@ -75,7 +75,9 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
             PhotoResult photoResult = fotoapparat.takePicture();
             Log.d("TAG", "Picture taken! Preparing...");
             photoResult.toBitmap().whenDone(bitmapPhoto ->
-                    presenter.onPictureTaken(bitmapPhoto.bitmap, isLast));
+            {
+                presenter.onPictureTaken(bitmapPhoto.bitmap, isLast);
+            });
         } else {
             Log.e("TAG", "Fotoapparat is null");
         }
@@ -157,19 +159,24 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
         textView.setText(msg);
     }
 
-    private void initFotoapparat(){
+    private void initFotoapparat() {
         fotoapparat = Fotoapparat
                 .with(getContext())
                 .into(cameraView)           // view which will draw the camera preview
                 .previewScaleType(ScaleType.CenterInside)  // we want the preview to fill the view
-                .photoResolution(ResolutionSelectorsKt.highestResolution())   // we want to have the biggest photo possible
+                .photoResolution(ResolutionSelectorsKt
+                        .highestResolution())   // we want to have the biggest photo possible
                 .lensPosition(LensPositionSelectorsKt.front())       // we want back camera
-                .focusMode(SelectorsKt.firstAvailable(  // (optional) use the first focus mode which is supported by device
+                .focusMode(SelectorsKt.firstAvailable(
+                        // (optional) use the first focus mode which is supported by device
                         FocusModeSelectorsKt.continuousFocusPicture(),
-                        FocusModeSelectorsKt.autoFocus(),        // in case if continuous focus is not available on device, auto focus will be used
-                        FocusModeSelectorsKt.fixed()             // if even auto focus is not available - fixed focus mode will be used
+                        FocusModeSelectorsKt.autoFocus(),
+                        // in case if continuous focus is not available on device, auto focus will be used
+                        FocusModeSelectorsKt.fixed()
+                        // if even auto focus is not available - fixed focus mode will be used
                 ))
-                .logger(LoggersKt.loggers(            // (optional) we want to log camera events in 2 places at once
+                .logger(LoggersKt.loggers(
+                        // (optional) we want to log camera events in 2 places at once
                         LoggersKt.logcat(),           // ... in logcat
                         LoggersKt.fileLogger(getContext())    // ... and to file
                 ))
