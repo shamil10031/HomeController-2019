@@ -4,19 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
     android:animateLayoutChanges="true"
     android:focusableInTouchMode="true"
     android:focusable="true">
 
     <ImageView
         android:id="@+id/im_view_auth_logo"
-        android:layout_width="231dp"
-        android:layout_height="81dp"
-        android:layout_marginBottom="@dimen/auth_elements_margin"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="40dp"
         android:fitsSystemWindows="true"
-        android:minWidth="60dp"
-        android:minHeight="20dp"
         android:src="@mipmap/logo"
         app:layout_constraintBottom_toTopOf="@+id/et_login"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,11 +31,10 @@
         android:paddingRight="@dimen/et_auth_padding"
         android:singleLine="true"
         android:textColor="#FFF"
-        android:textColorHint="#BEBEBE"
+        android:textColorHint="@color/color_et_hint"
         app:layout_constraintBottom_toTopOf="@+id/et_password"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Shomazz" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/et_password"
@@ -52,7 +48,7 @@
         android:paddingRight="@dimen/et_auth_padding"
         android:singleLine="true"
         android:textColor="#FFF"
-        android:textColorHint="#BEBEBE"
+        android:textColorHint="@color/color_et_hint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,25 +59,27 @@
         android:id="@+id/btn_sign_in"
         android:layout_width="170dp"
         android:layout_height="@dimen/et_auth_height"
-        android:layout_marginTop="@dimen/auth_elements_margin"
+        android:layout_marginTop="30dp"
         android:background="@drawable/btn_sign_in_background"
         android:fitsSystemWindows="true"
         android:text="@string/Sign_in"
         android:textColor="#FFF"
-        app:layout_constraintEnd_toEndOf="@id/et_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_password" />
 
     <Button
         android:id="@+id/btn_sign_up"
-        android:layout_width="100dp"
-        android:layout_height="@dimen/et_auth_height"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginTop="@dimen/auth_elements_margin"
         android:background="@drawable/btn_sign_up_background"
         android:fitsSystemWindows="true"
         android:text="@string/Sign_up"
         android:textColor="#FFF"
-        app:layout_constraintStart_toStartOf="@id/et_password"
-        app:layout_constraintTop_toBottomOf="@+id/et_password" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_sign_in" />
 
     <ProgressBar
         android:id="@+id/progress_auth"

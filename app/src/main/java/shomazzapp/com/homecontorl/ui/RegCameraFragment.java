@@ -1,19 +1,25 @@
 package shomazzapp.com.homecontorl.ui;
 
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+
+import java.util.Queue;
+import java.util.concurrent.SynchronousQueue;
 
 import io.fotoapparat.Fotoapparat;
 import io.fotoapparat.log.LoggersKt;
@@ -25,6 +31,7 @@ import io.fotoapparat.selector.ResolutionSelectorsKt;
 import io.fotoapparat.selector.SelectorsKt;
 import io.fotoapparat.view.CameraView;
 import shomazzapp.com.homecontorl.R;
+import shomazzapp.com.homecontorl.common.CameraPreview;
 import shomazzapp.com.homecontorl.common.interfaces.FController;
 import shomazzapp.com.homecontorl.common.interfaces.ViewPagerController;
 import shomazzapp.com.homecontorl.mvp.presnter.RegCameraPresenter;
@@ -35,12 +42,15 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @InjectPresenter
     RegCameraPresenter presenter;
 
+    private Camera mCamera;
+    private CameraPreview mPreview;
     private Fotoapparat fotoapparat;
     private CameraView cameraView;
     private ProgressBar progressBar;
     private ProgressBar horProgressBar;
     private TextView textView;
     private ImageView imViewInstruction;
+    private String currentMsg;
 
     private static final int LAYOUT = R.layout.fragment_reg_camera;
 
@@ -70,8 +80,13 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
 
     @Override
     public void takePicture(boolean isLast) {
-        Log.d("TAG", "Taking picture...");
-        if (fotoapparat != null) {
+        Log.d("TAG", "Taking picture from queue...");
+        if (mPreview.getQueue().peek() != null || mPreview.getQueue().peek().length != 0 ) {
+            Log.d("TAG", "Picture taken!");
+            presenter.onPictureTaken(mPreview.getQueue().poll(), isLast);
+        }
+
+        /*if (fotoapparat != null) {
             PhotoResult photoResult = fotoapparat.takePicture();
             Log.d("TAG", "Picture taken! Preparing...");
             photoResult.toBitmap().whenDone(bitmapPhoto ->
@@ -80,7 +95,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
             });
         } else {
             Log.e("TAG", "Fotoapparat is null");
-        }
+        }*/
     }
 
     @Override
@@ -94,15 +109,19 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     }
 
     private void init(View view) {
+        mCamera = getCameraInstance();
+        mPreview = new CameraPreview(getContext(), mCamera);
+        FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_view);
+        preview.addView(mPreview);
         horProgressBar = (ProgressBar) view.findViewById(R.id.hor_progress_reg_camera);
         imViewInstruction = (ImageView) view.findViewById(R.id.im_view_reg_instr);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_reg_camera);
-        cameraView = (CameraView) view.findViewById(R.id.camera_view);
+        //cameraView = (CameraView) view.findViewById(R.id.camera_view);
         textView = (TextView) view.findViewById(R.id.tv_reg_camera);
-        textView.setText("");
+        currentMsg = "Нажмите на кнопку START для регистрации лица";
         hidePic();
         hideProgressBar();
-        initFotoapparat();
+        //initFotoapparat();
         Button btnStart = (Button) view.findViewById(R.id.btn_reg_start_camera);
         btnStart.setOnClickListener((View.OnClickListener) v -> presenter.onStart());
     }
@@ -126,13 +145,33 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @Override
     public void onResume() {
         super.onResume();
-        fotoapparat.start();
+        //fotoapparat.start();
+        textView.setText(currentMsg);
+        hidePic();
+        hideProgressBar();
+        try {
+            if(mCamera == null)
+                mCamera = getCameraInstance();
+            mPreview.setCamera(mCamera);
+        } catch (Exception e){
+            Log.d("Camera", "Error starting camera preview: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPreview.onPause();
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        fotoapparat.stop();
+//        fotoapparat.stop();
     }
 
     @Override
@@ -156,6 +195,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
 
     @Override
     public void showMsg(String msg) {
+        currentMsg = msg;
         textView.setText(msg);
     }
 
@@ -183,4 +223,15 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
                 .build();
     }
 
+    public static Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open();
+            c.setDisplayOrientation(90);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return c;
+    }
 }

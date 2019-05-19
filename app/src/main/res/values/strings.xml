@@ -8,4 +8,6 @@
     <string name="Sign_in">Sign In</string>
     <string name="Sign_up">Sign Up</string>
 
+    <string name="create_username">Firstly, create your username</string>
+
 </resources>
