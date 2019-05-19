@@ -26,7 +26,7 @@ public class Client {
     private static final String NETWORK_TAG = "Network";
 
     public static final String HOST = "192.168.43.243";
-    public static final int PORT = 8883;
+    public static final int PORT = 8882;
     private int UDP_PORT;
     public static final int BYTES_COUNT = 1024;
     public static final int CHUNK_SIZE = 40960;
@@ -44,6 +44,36 @@ public class Client {
         this.port = port;
         this.listenner = listenner;
         photosLoaded.set(0);
+    }
+
+    public Thread sendPicBytes(byte[] pic, boolean closeSocket) {
+
+        Log.d(NETWORK_TAG, "Send bitmap...");
+        Thread thread = new Thread(() -> {
+            try {
+                String encoded = Base64.encodeToString(pic, Base64.DEFAULT);
+
+                int imageBytesCount = encoded.length();
+                Log.d(NETWORK_TAG, "Sending bytes count = " + imageBytesCount);
+                sendRequest(new Request(imageBytesCount, null), false).join();
+                //sendRequestByUDP(new Request(imageBytesCount, null)).join();
+
+                Log.d(NETWORK_TAG, "Sending bytes [" + imageBytesCount + "]");
+                sendBytes(encoded);
+                //sendBytesUDPByChanks(encoded.getBytes());
+                Log.d(NETWORK_TAG, "Sended!");
+                listenner.reciveResponse(new Response(Response.BITMAP_SENDED,
+                        photosLoaded.incrementAndGet() + ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (closeSocket) {
+                    closeSocket(socket);
+                }
+            }
+        });
+        thread.start();
+        return thread;
     }
 
     public Thread sendBitmap(Bitmap bitmap, boolean closeSocket) {

@@ -8,6 +8,7 @@
     <FrameLayout
         android:id="@+id/fragments_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@mipmap/background"/>
 
 </android.support.constraint.ConstraintLayout>

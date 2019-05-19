@@ -40,6 +40,9 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     private int photosSended;
     private int UdpPort;
 
+    private static final int delay = 100;
+    private long lastTimeFrameShoted = 0;
+
     public RegCameraPresenter() {
         super();
         client = new Client(this, Client.HOST, Client.PORT);
@@ -56,47 +59,66 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                 false);
     }
 
-    public Bitmap rotate(Bitmap bitmap) {
+    public static Bitmap rotate(Bitmap bitmap) {
         Matrix matrix = new Matrix();
-        matrix.postRotate(-90);
+        matrix.postRotate(90);
         return Bitmap.createBitmap(bitmap, 0, 0,
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    public void onPictureTaken(Bitmap bitmap, boolean isLast) {
-        Log.d("TAG", "Prepared! Sending...");
-        if (!isLast)
-            try {
-                client.sendBitmap(rotate(bitmap), false).join();
-                photosSended++;
-                if (photosSended + 1 == photosCount)
-                    getViewState().takePicture(true);
-                else
-                    getViewState().takePicture(false);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        else {
-            try {
-                client.sendBitmap(rotate(bitmap), false).join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            getViewState().hidePic();
-            getViewState().hideHorProgressBar();
-            getViewState().showProgressBar();
-            getViewState().showMsg("Face registered, now relax :) It's almost done..");
-            Thread thread = new Thread(() -> {
+    //public void onPictureTaken(Bitmap bitmap, boolean isLast) {
+    public void onPictureTaken(byte[] bitmap, boolean isLast) {
+//        Log.d("TAG", "Checking for delay. " + System.currentTimeMillis() + " - " + lastTimeFrameShoted);
+        try {
+            Thread.sleep(50);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        if (System.currentTimeMillis() - lastTimeFrameShoted >= delay) {
+            Log.d("TAG", "Prepared! Sending...");
+            if (!isLast)
                 try {
-                    client.connectSocketIfNeed();
-                    reciveResponse(client.getResponse(client.getSocket()));
-                } catch (IOException e) {
-                    reciveResponse(new Response(
-                            Response.CONNECTION_ERROR, null));
+                    //client.sendBitmap(rotate(bitmap), false).join();
+                    client.sendPicBytes(bitmap, false).join();
+                    photosSended++;
+                    lastTimeFrameShoted = System.currentTimeMillis();
+                    if (photosSended + 1 == photosCount) {
+                        getViewState().takePicture(true);
+                    }
+                    else {
+                        getViewState().takePicture(false);
+                    }
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            });
-            thread.start();
+            else {
+                try {
+                    //client.sendBitmap(rotate(bitmap), false).join();
+                    client.sendPicBytes(bitmap, false).join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                getViewState().hidePic();
+                getViewState().hideHorProgressBar();
+                getViewState().showProgressBar();
+                getViewState().showMsg("Face registered, now relax :) It's almost done..");
+                Thread thread = new Thread(() -> {
+                    try {
+                        client.connectSocketIfNeed();
+                        reciveResponse(client.getResponse(client.getSocket()));
+                    } catch (IOException e) {
+                        reciveResponse(new Response(
+                                Response.CONNECTION_ERROR, null));
+                        e.printStackTrace();
+                    }
+                });
+                thread.start();
+            }
+        } else {
+            if (photosSended + 1 == photosCount)
+                getViewState().takePicture(true);
+            else
+                getViewState().takePicture(false);
         }
     }
 

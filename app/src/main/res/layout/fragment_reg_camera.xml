@@ -5,11 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/colorPrimaryDark"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <io.fotoapparat.view.CameraView
+   <!-- <io.fotoapparat.view.CameraView
+        android:id="@+id/camera_view"
+        android:layout_width="@dimen/reg_camera_diameter_dp"
+        android:layout_height="@dimen/reg_camera_diameter_dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <FrameLayout
         android:id="@+id/camera_view"
         android:layout_width="@dimen/reg_camera_diameter_dp"
         android:layout_height="@dimen/reg_camera_diameter_dp"
