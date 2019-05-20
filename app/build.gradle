@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "shomazzapp.com.homecontorl"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -22,6 +22,9 @@ android {
     }
 }
 
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -38,4 +41,5 @@ dependencies {
     annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.5'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }

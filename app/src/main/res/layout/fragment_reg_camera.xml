@@ -8,15 +8,6 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-   <!-- <io.fotoapparat.view.CameraView
-        android:id="@+id/camera_view"
-        android:layout_width="@dimen/reg_camera_diameter_dp"
-        android:layout_height="@dimen/reg_camera_diameter_dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
     <FrameLayout
         android:id="@+id/camera_view"
         android:layout_width="@dimen/reg_camera_diameter_dp"
@@ -57,16 +48,16 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        tools:text="Connection error"
-        android:gravity="center"
-        android:textSize="20sp"
         android:id="@+id/tv_reg_camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Connection error" />
 
     <ProgressBar
         android:id="@+id/progress_reg_camera"
@@ -80,14 +71,13 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <ProgressBar
-        android:visibility="gone"
-        android:id="@+id/hor_progress_reg_camera"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:indeterminate="false"
-        app:layout_constraintBottom_toTopOf="@+id/btn_reg_start_camera" />
+    <shomazzapp.com.homecontorl.ui.views.CircularProgressBar
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxValue="150" />
 
 </android.support.constraint.ConstraintLayout>

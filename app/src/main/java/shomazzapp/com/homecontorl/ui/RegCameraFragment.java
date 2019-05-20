@@ -47,7 +47,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     private Fotoapparat fotoapparat;
     private CameraView cameraView;
     private ProgressBar progressBar;
-    private ProgressBar horProgressBar;
+//    private ProgressBar horProgressBar;
     private TextView textView;
     private ImageView imViewInstruction;
     private String currentMsg;
@@ -113,7 +113,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
         mPreview = new CameraPreview(getContext(), mCamera);
         FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_view);
         preview.addView(mPreview);
-        horProgressBar = (ProgressBar) view.findViewById(R.id.hor_progress_reg_camera);
+//        horProgressBar = (ProgressBar) view.findViewById(R.id.hor_progress_reg_camera);
         imViewInstruction = (ImageView) view.findViewById(R.id.im_view_reg_instr);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_reg_camera);
         //cameraView = (CameraView) view.findViewById(R.id.camera_view);
@@ -128,18 +128,18 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
 
     @Override
     public void showHorProgressBar() {
-        horProgressBar.setVisibility(View.VISIBLE);
-        horProgressBar.setMax(presenter.photosCount);
+//        horProgressBar.setVisibility(View.VISIBLE);
+//        horProgressBar.setMax(presenter.photosCount);
     }
 
     @Override
     public void hideHorProgressBar() {
-        horProgressBar.setVisibility(View.GONE);
+//        horProgressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void updateLoadingBar(int value) {
-        horProgressBar.setProgress(value);
+//        horProgressBar.setProgress(value);
     }
 
     @Override
@@ -197,6 +197,11 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     public void showMsg(String msg) {
         currentMsg = msg;
         textView.setText(msg);
+    }
+
+    @Override
+    public void updateProgressBar() {
+
     }
 
     private void initFotoapparat() {

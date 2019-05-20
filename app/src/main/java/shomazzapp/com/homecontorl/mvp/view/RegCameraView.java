@@ -16,6 +16,8 @@ public interface RegCameraView extends MvpView {
 
     void hideProgressBar();
 
+    void updateProgressBar();
+
     @StateStrategyType(SkipStrategy.class)
     void showMsg(String msg);
 
