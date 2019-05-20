@@ -28,6 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <shomazzapp.com.homecontorl.common.HoleView
+        android:id="@+id/hole_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
@@ -74,10 +75,10 @@
     <shomazzapp.com.homecontorl.ui.views.CircularProgressBar
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/im_view_reg_instr"
+        app:layout_constraintEnd_toEndOf="@id/im_view_reg_instr"
+        app:layout_constraintStart_toStartOf="@id/im_view_reg_instr"
+        app:layout_constraintTop_toTopOf="@id/im_view_reg_instr"
         app:maxValue="150" />
 
 </android.support.constraint.ConstraintLayout>

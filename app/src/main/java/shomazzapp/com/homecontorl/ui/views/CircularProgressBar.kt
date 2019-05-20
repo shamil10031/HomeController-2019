@@ -16,9 +16,11 @@ class CircularProgressBar : View {
 
     private var radius = 0.toFloat()
     private var maxValue: Float = 0f
-    private var currentValue: Float = 65f
+    private var currentValue: Float = 150f
     private val oval = RectF()
     private val strokeWidth = 10f
+    private val startAngle = 120f
+    private val sweepDistance = 240f
 
     constructor(context: Context) : super(context)
 
@@ -36,14 +38,14 @@ class CircularProgressBar : View {
         maxValue = typedAttrs.getFloat(R.styleable.CircularProgressBar_maxValue, 0f)
         backgroundPaint.color = typedAttrs.getColor(
                 R.styleable.CircularProgressBar_backgroundColor,
-                ContextCompat.getColor(context, R.color.colorPrimaryDark)
+                ContextCompat.getColor(context, android.R.color.holo_red_light)
         )
         backgroundPaint.style = Paint.Style.STROKE
         backgroundPaint.strokeWidth = strokeWidth
 
         foregroundPaint.color = typedAttrs.getColor(
                 R.styleable.CircularProgressBar_backgroundColor,
-                ContextCompat.getColor(context, R.color.colorPrimaryLight)
+                ContextCompat.getColor(context, android.R.color.holo_green_light)
         )
         foregroundPaint.style = Paint.Style.STROKE
         foregroundPaint.strokeWidth = strokeWidth
@@ -70,9 +72,9 @@ class CircularProgressBar : View {
         val centerX = x + width / 2
         val centerY = y + height / 2
 
-        oval.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius)
+        oval.set(0f, 0f, width.toFloat(), height.toFloat())
         canvas.drawArc(oval, 90f, 360f, false, backgroundPaint)
-        canvas.drawArc(oval, 150f, currentValue / maxValue * 360, false, foregroundPaint)
+        canvas.drawArc(oval, startAngle, currentValue / maxValue * sweepDistance, false, foregroundPaint)
     }
 }
 
