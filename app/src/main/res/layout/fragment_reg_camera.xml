@@ -79,6 +79,8 @@
         app:layout_constraintEnd_toEndOf="@id/im_view_reg_instr"
         app:layout_constraintStart_toStartOf="@id/im_view_reg_instr"
         app:layout_constraintTop_toTopOf="@id/im_view_reg_instr"
+        app:startAngle="150"
+        app:sweepDistance="240"
         app:maxValue="150" />
 
 </android.support.constraint.ConstraintLayout>

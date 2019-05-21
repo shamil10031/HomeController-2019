@@ -16,11 +16,16 @@ class CircularProgressBar : View {
 
     private var radius = 0.toFloat()
     private var maxValue: Float = 0f
-    private var currentValue: Float = 150f
+    private var currentValue: Float = 0f
+        set(value) {
+            field = value
+            invalidate()
+        }
+
     private val oval = RectF()
-    private val strokeWidth = 10f
-    private val startAngle = 120f
-    private val sweepDistance = 240f
+    private var strokeWidth = 10f
+    private var startAngle = 90f
+    private var sweepDistance = 360f
 
     constructor(context: Context) : super(context)
 
@@ -36,6 +41,9 @@ class CircularProgressBar : View {
         val typedAttrs = context.obtainStyledAttributes(attrs, R.styleable.CircularProgressBar)
 
         maxValue = typedAttrs.getFloat(R.styleable.CircularProgressBar_maxValue, 0f)
+        startAngle = typedAttrs.getFloat(R.styleable.CircularProgressBar_startAngle, 90f)
+        sweepDistance = typedAttrs.getFloat(R.styleable.CircularProgressBar_sweepDistance, 360f)
+
         backgroundPaint.color = typedAttrs.getColor(
                 R.styleable.CircularProgressBar_backgroundColor,
                 ContextCompat.getColor(context, android.R.color.holo_red_light)
@@ -49,6 +57,8 @@ class CircularProgressBar : View {
         )
         foregroundPaint.style = Paint.Style.STROKE
         foregroundPaint.strokeWidth = strokeWidth
+
+        typedAttrs.recycle()
 
     }
 
@@ -69,11 +79,9 @@ class CircularProgressBar : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val centerX = x + width / 2
-        val centerY = y + height / 2
 
-        oval.set(0f, 0f, width.toFloat(), height.toFloat())
-        canvas.drawArc(oval, 90f, 360f, false, backgroundPaint)
+        oval.set(0f + strokeWidth, 0f + strokeWidth, width.toFloat() - strokeWidth, height.toFloat() - strokeWidth)
+        canvas.drawArc(oval, startAngle, sweepDistance, false, backgroundPaint)
         canvas.drawArc(oval, startAngle, currentValue / maxValue * sweepDistance, false, foregroundPaint)
     }
 }
