@@ -5,12 +5,21 @@
     <dimen name="et_auth_padding">20dp</dimen>
     <dimen name="auth_elements_margin">20dp</dimen>
 
+    <dimen name="et_reg_width">280dp</dimen>
+    <dimen name="et_reg_height">50dp</dimen>
+    <dimen name="et_reg_padding">20dp</dimen>
+    <dimen name="reg_elements_margin">15dp</dimen>
+    <dimen name="reg_text_size">18sp</dimen>
+    <dimen name="reg_text_hint_size">21sp</dimen>
+    <dimen name="reg_text_margin">5dp</dimen>
+
     <dimen name="et_corner_radius">13dp</dimen>
+
 
     <dimen name="reg_camera_diameter_dp">500dp</dimen>
     <integer name="reg_camera_diameter">300</integer>
 
-    <dimen name="device_item_height">120dp</dimen>
+    <dimen name="device_item_height">150dp</dimen>
     <dimen name="device_item_margin">10dp</dimen>
     <dimen name="device_item_padding">16dp</dimen>
 

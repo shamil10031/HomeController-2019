@@ -66,10 +66,9 @@ public class DeviceListFragment extends MvpAppCompatFragment implements DeviceLi
         recycler.setAdapter(adapter);
         recycler.addItemDecoration(new ItemDecoration(getContext(), R.dimen.recycler_item_margin));
 
-        if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE)
+        //if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE)
             recycler.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        else
-            recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        //else recycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
     }
 

@@ -9,5 +9,7 @@
     <string name="Sign_up">Sign Up</string>
 
     <string name="create_username">Firstly, create your username</string>
+    <string name="create_login">Next, create your login</string>
+    <string name="create_password">And, create your password</string>
 
 </resources>

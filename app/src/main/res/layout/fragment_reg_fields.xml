@@ -9,54 +9,77 @@
     android:focusableInTouchMode="true">
 
     <TextView
+        android:id="@+id/tv_reg_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/reg_text_margin"
         android:text="@string/create_username"
+        android:textColor="#FFF"
+        android:textSize="@dimen/reg_text_size"
         app:layout_constraintBottom_toTopOf="@+id/et_reg_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/et_reg_name" />
 
     <EditText
         android:id="@+id/et_reg_name"
-        android:layout_width="@dimen/et_auth_width"
-        android:layout_height="@dimen/et_auth_height"
-        android:layout_marginTop="80dp"
+        android:layout_width="@dimen/et_reg_width"
+        android:layout_height="@dimen/et_reg_height"
+        android:layout_marginBottom="@dimen/reg_elements_margin"
         android:background="@drawable/et_auth_background"
-        android:fitsSystemWindows="true"
         android:hint="@string/Name"
         android:paddingLeft="@dimen/et_auth_padding"
         android:paddingRight="@dimen/et_auth_padding"
         android:singleLine="true"
         android:textColor="#FFF"
-        android:textColorHint="#BEBEBE"
+        android:textColorHint="@color/color_et_hint"
+        android:textSize="@dimen/reg_text_hint_size"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reg_login"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_reg_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/reg_text_margin"
+        android:text="@string/create_login"
+        android:textColor="#FFF"
+        android:textSize="@dimen/reg_text_size"
+        app:layout_constraintBottom_toTopOf="@+id/et_reg_login"
+        app:layout_constraintStart_toStartOf="@+id/et_reg_login" />
 
     <EditText
         android:id="@+id/et_reg_login"
-        android:layout_width="@dimen/et_auth_width"
-        android:layout_height="@dimen/et_auth_height"
-        android:layout_marginTop="@dimen/auth_elements_margin"
+        android:layout_width="@dimen/et_reg_width"
+        android:layout_height="@dimen/et_reg_height"
+        android:layout_marginBottom="@dimen/reg_elements_margin"
         android:background="@drawable/et_auth_background"
-        android:fitsSystemWindows="true"
         android:hint="@string/Login"
         android:paddingLeft="@dimen/et_auth_padding"
         android:paddingRight="@dimen/et_auth_padding"
         android:singleLine="true"
         android:textColor="#FFF"
-        android:textColorHint="#BEBEBE"
+        android:textColorHint="@color/color_et_hint"
+        android:textSize="@dimen/reg_text_hint_size"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reg_password"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_reg_name" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_reg_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/reg_text_margin"
+        android:text="@string/create_password"
+        android:textColor="#FFF"
+        android:textSize="@dimen/reg_text_size"
+        app:layout_constraintBottom_toTopOf="@+id/et_reg_password"
+        app:layout_constraintStart_toStartOf="@+id/et_reg_password" />
 
     <EditText
         android:id="@+id/et_reg_password"
-        android:layout_width="@dimen/et_auth_width"
-        android:layout_height="@dimen/et_auth_height"
-        android:layout_marginTop="@dimen/auth_elements_margin"
+        android:layout_width="@dimen/et_reg_width"
+        android:layout_height="@dimen/et_reg_height"
         android:background="@drawable/et_auth_background"
-        android:fitsSystemWindows="true"
         android:hint="@string/Password"
         android:inputType="textPassword"
         android:paddingLeft="@dimen/et_auth_padding"
@@ -64,22 +87,23 @@
         android:singleLine="true"
         android:textColor="#FFF"
         android:textColorHint="#BEBEBE"
+        android:textSize="@dimen/reg_text_hint_size"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_reg_login"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="I Love Nikita" />
 
     <Button
         android:id="@+id/btn_reg_sign_up"
         android:layout_width="@dimen/et_auth_width"
         android:layout_height="@dimen/et_auth_height"
-        android:layout_marginTop="@dimen/auth_elements_margin"
-        android:background="@drawable/btn_sign_up_background"
-        android:fitsSystemWindows="true"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/btn_sign_in_background"
         android:text="@string/Sign_up"
         android:textColor="#FFF"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_reg_password" />
 
     <ProgressBar

@@ -28,10 +28,10 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
     private int requestCode;
 
     private static final String testJson = "[" +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"true\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"false\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"false\"}, " +
-            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", image_address: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"true\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", item_photo: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"true\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", item_photo: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"false\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", item_photo: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"false\"}, " +
+            "{id:123, item_name: \"Утюг\", item_description: \"Хороший утюг, очень горячий\", item_photo: \"https://img.mvideo.ru/Pdb/20039195b.jpg\", is_item_on: \"true\"} " +
             "]";
 
 
@@ -48,6 +48,10 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
     @Override
     public void runOnUi(@NonNull Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);
+    }
+
+    public Context getContext(){
+        return context.get();
     }
 
     @Override
@@ -99,7 +103,7 @@ public class DeviceListPresenter extends MvpPresenter<DeviceListView> implements
     }
 
     public void requestDiveceList() {
-        //reciveResponse(new Response(200+testJson));
+        //reciveResponse(new Response(200, testJson));
         //getViewState().showProgressBar();
         requestCode = Request.AVALIABLE_DEVICES;
         client.sendRequestForResponse(Request.

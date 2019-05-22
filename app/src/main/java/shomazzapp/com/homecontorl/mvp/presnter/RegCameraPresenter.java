@@ -190,7 +190,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
         getViewState().takePicture(false);
     }
 
-    public void requestPermissionIfNeed(Activity context) {
+    public static void requestPermissionIfNeed(Activity context) {
         if (ContextCompat.checkSelfPermission(context,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {

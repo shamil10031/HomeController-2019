@@ -12,6 +12,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import shomazzapp.com.homecontorl.R;
 import shomazzapp.com.homecontorl.common.interfaces.FController;
 import shomazzapp.com.homecontorl.common.Screens;
+import shomazzapp.com.homecontorl.mvp.presnter.RegCameraPresenter;
 
 public class MainActivity extends MvpAppCompatActivity implements FController {
 
@@ -21,7 +22,9 @@ public class MainActivity extends MvpAppCompatActivity implements FController {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
+        RegCameraPresenter.requestPermissionIfNeed(this);
         if (savedInstanceState == null)
+            //addFragment(createFragment(Screens.DEVICES_LIST), false);
             addFragment(createFragment(Screens.START), false);
     }
 
@@ -29,7 +32,6 @@ public class MainActivity extends MvpAppCompatActivity implements FController {
     public void onBackPressed() {
         //TODO: remove Toast
         int count = getSupportFragmentManager().getBackStackEntryCount();
-        //Toast.makeText(this, "Count before onBack = " + count, Toast.LENGTH_LONG).show();
         if (count == 1) getSupportFragmentManager().popBackStack();
         super.onBackPressed();
     }

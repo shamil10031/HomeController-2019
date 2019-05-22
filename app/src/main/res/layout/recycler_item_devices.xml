@@ -1,78 +1,55 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="@dimen/device_item_height"
     android:layout_height="@dimen/device_item_height"
     app:cardCornerRadius="@dimen/device_item_padding">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorSecondaryLight"
-        android:padding="@dimen/device_item_padding">
+        android:background="@drawable/device_item_frame">
 
-        <ImageView
-            android:id="@+id/im_view_device"
-            android:layout_width="110dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/device_item_padding"
-            tools:src="@tools:sample/avatars" />
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/device_item_photo_bckg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/im_view_device"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center" />
 
-            <TextView
-                android:id="@+id/tv_device_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textColor="#212121"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="@tools:sample/full_names" />
+        </FrameLayout>
 
-            <TextView
-                android:id="@+id/tv_device_descr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="4"
-                android:textColor="#212121"
-                android:textSize="15sp"
-                tools:text="FLJndskfsjnsdkj n f jklnkjn lkn" />
+        <TextView
+            android:id="@+id/tv_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Iron"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_device_toggle"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/device_item_button_bckg_on"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_device_name" />
 
-                <TextView
-                    android:layout_marginStart="10dp"
-                    android:id="@+id/tv_device_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="end|bottom"
-                    android:maxLines="1"
-                    android:textColor="#212121"
-                    android:textStyle="bold|italic"
-                    tools:text="id: 1" />
-
-                <TextView
-                    android:id="@+id/tv_device_is_on"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="end|bottom"
-                    android:maxLines="1"
-                    android:layout_marginEnd="10dp"
-                    android:textColor="#212121"
-                    android:textStyle="bold|italic"
-                    tools:text="off" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

@@ -61,7 +61,6 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter.requestPermissionIfNeed(getActivity());
         FController fController = (FController) getActivity();
         presenter.setFragmentController(fController);
         presenter.setViewPagerController((ViewPagerController)

@@ -1,12 +1,15 @@
 package shomazzapp.com.homecontorl.ui.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,27 +29,22 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.MyViewHo
     private DeviceListPresenter presenter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView id;
         public TextView name;
-        public TextView isOn;
-        public TextView descriprion;
         public ImageView imView;
+        public Button btnToggle;
 
         public MyViewHolder(@NonNull View item) {
             super(item);
-            id = (TextView) item.findViewById(R.id.tv_device_id);
+            btnToggle = (Button) item.findViewById(R.id.btn_device_toggle);
             name = (TextView) item.findViewById(R.id.tv_device_name);
-            isOn = (TextView) item.findViewById(R.id.tv_device_is_on);
-            descriprion = (TextView) item.findViewById(R.id.tv_device_descr);
             imView = (ImageView) item.findViewById(R.id.im_view_device);
         }
 
-        public void bind(Device device) {
+        public void bind(Device device, Context context) {
             Picasso.get().load(device.getPhotoAddress()).into(imView);
-            id.setText("id: " + device.getId());
             name.setText(device.getName());
-            descriprion.setText(device.getDescription());
-            isOn.setText(device.isOn() ? "On" : "Off");
+            if (device.isOn()) btnToggle.setBackground(ContextCompat.getDrawable(context, R.drawable.device_item_button_bckg_on));
+            else btnToggle.setBackground(ContextCompat.getDrawable(context, R.drawable.device_item_button_bckg_off));
         }
     }
 
@@ -71,7 +69,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind(devices.get(position));
+        holder.bind(devices.get(position), presenter.getContext());
         holder.itemView.setOnClickListener(v -> presenter.toggleDevice
                 (devices.get(position).getId()));
     }
