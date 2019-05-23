@@ -76,6 +76,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Camera.Parameters parameters = mCamera.getParameters();
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         Camera.Size previewSize = previewSizes.get(0);
+        parameters.setJpegQuality(50);
         parameters.setPreviewSize(previewSize.width, previewSize.height);
         mCamera.setPreviewCallback(mPreviewCallback);
         mCamera.setParameters(parameters);
@@ -131,7 +132,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                     camera.getParameters().getPreviewSize().height, null);
             Rect r = new Rect(0, 0, mPreviewSize.width, mPreviewSize.height);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            im.compressToJpeg(r, 70, baos);
+            im.compressToJpeg(r, 50, baos);
             byte[] imageBytes = baos.toByteArray();
             Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             image = RegCameraPresenter.rotate(image);

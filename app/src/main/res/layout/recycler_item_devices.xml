@@ -46,6 +46,9 @@
             android:layout_height="20dp"
             android:layout_marginTop="2dp"
             android:background="@drawable/device_item_button_bckg_on"
+            android:text="OFF"
+            android:textAllCaps="true"
+            android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_device_name" />

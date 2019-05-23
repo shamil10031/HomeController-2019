@@ -19,7 +19,7 @@
     <dimen name="reg_camera_diameter_dp">500dp</dimen>
     <integer name="reg_camera_diameter">300</integer>
 
-    <dimen name="device_item_height">150dp</dimen>
+    <dimen name="device_item_height">160dp</dimen>
     <dimen name="device_item_margin">10dp</dimen>
     <dimen name="device_item_padding">16dp</dimen>
 

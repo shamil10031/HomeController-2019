@@ -52,7 +52,7 @@ public class HoleView extends View {
                 TypedValue.COMPLEX_UNIT_DIP, dip,
                 r.getDisplayMetrics());
 
-        color  = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
+        color  = ContextCompat.getColor(getContext(), R.color.colorBackground);
         color = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 

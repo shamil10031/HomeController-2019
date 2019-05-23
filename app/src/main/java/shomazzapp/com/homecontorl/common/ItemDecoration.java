@@ -24,7 +24,8 @@ public class ItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state) {
 
-        final int position = parent.getChildLayoutPosition(view);
+        outRect.set(itemOffset, itemOffset, itemOffset, itemOffset);
+        /*final int position = parent.getChildLayoutPosition(view);
         switch (position) {
             case RecyclerView.NO_POSITION:
                 outRect.set(0, 0, 0, 0);
@@ -34,7 +35,7 @@ public class ItemDecoration extends RecyclerView.ItemDecoration {
                 break;
             default:
                 outRect.set(itemOffset, 0, itemOffset, itemOffset);
-        }
+        }*/
     }
 }
 

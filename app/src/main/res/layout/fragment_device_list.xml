@@ -3,15 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorBackground"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:padding="10dp">
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="10dp"
         android:id="@+id/recycler_devices"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="@dimen/device_item_margin"/>
 
 </FrameLayout>

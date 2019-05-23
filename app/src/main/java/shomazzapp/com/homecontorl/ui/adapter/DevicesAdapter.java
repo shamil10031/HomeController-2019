@@ -29,6 +29,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.MyViewHo
     private DeviceListPresenter presenter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+
         public TextView name;
         public ImageView imView;
         public Button btnToggle;
@@ -43,12 +44,20 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.MyViewHo
         public void bind(Device device, Context context) {
             Picasso.get().load(device.getPhotoAddress()).into(imView);
             name.setText(device.getName());
-            if (device.isOn()) btnToggle.setBackground(ContextCompat.getDrawable(context, R.drawable.device_item_button_bckg_on));
-            else btnToggle.setBackground(ContextCompat.getDrawable(context, R.drawable.device_item_button_bckg_off));
+            if (device.isOn()) {
+                btnToggle.setBackground(
+                        ContextCompat.getDrawable(context, R.drawable.device_item_button_bckg_on));
+                btnToggle.setText("On");
+            } else {
+                btnToggle.setBackground(
+                        ContextCompat.getDrawable(context, R.drawable.device_item_button_bckg_off));
+                btnToggle.setText("Off");
+            }
         }
     }
 
-    public DevicesAdapter(Context context, ArrayList<Device> devices, DeviceListPresenter presenter) {
+    public DevicesAdapter(Context context, ArrayList<Device> devices,
+            DeviceListPresenter presenter) {
         this.devices = devices;
         this.presenter = presenter;
         this.inflater = LayoutInflater.from(context);
@@ -80,8 +89,8 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.MyViewHo
         notifyDataSetChanged();
     }
 
-    public void changeDeviceToggle(int id){
-        for (int i =0; i < devices.size(); i++){
+    public void changeDeviceToggle(int id) {
+        for (int i = 0; i < devices.size(); i++) {
             if (devices.get(i).getId() == id) {
                 devices.get(i).changeToggle();
                 notifyDataSetChanged();

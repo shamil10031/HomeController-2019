@@ -26,7 +26,7 @@ public class Client {
     private static final String NETWORK_TAG = "Network";
 
     public static final String HOST = "192.168.43.243";
-    public static final int PORT = 8886;
+    public static final int PORT = 8883;
     private int UDP_PORT;
     public static final int BYTES_COUNT = 1024;
     public static final int CHUNK_SIZE = 40960;

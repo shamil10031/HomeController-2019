@@ -14,4 +14,6 @@
 
     <color name="colorBackgroundDevice">#709568F4</color>
 
+    <color name="colorBackground">#303030</color>
+
 </resources>
