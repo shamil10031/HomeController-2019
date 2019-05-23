@@ -18,12 +18,16 @@ class CircularProgressBar : View {
     private var radius = 0.toFloat()
     private var maxValue: Float = 0f
     private var currentValue: Float = 0f
+    set(value) {
+        field = value
+        invalidate()
+    }
 
     private val oval = RectF()
     private var strokeWidth = 10f
     private var startAngle = 90f
     private var sweepDistance = 360f
-    private val sweepAnimationDurataion = 500L
+    private val sweepAnimationDurataion = 200L
 
     constructor(context: Context) : super(context)
 
