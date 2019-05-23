@@ -16,12 +16,12 @@ class CircularProgressBar : View {
     private val backgroundPaint: Paint = Paint()
 
     private var radius = 0.toFloat()
-    private var maxValue: Float = 0f
+    var maxValue: Float = 0f
     private var currentValue: Float = 0f
-    set(value) {
-        field = value
-        invalidate()
-    }
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     private val oval = RectF()
     private var strokeWidth = 10f
