@@ -27,7 +27,7 @@ class CircularProgressBar : View {
     private var strokeWidth = 10f
     private var startAngle = 90f
     private var sweepDistance = 360f
-    private val sweepAnimationDurataion = 200L
+    private val sweepAnimationDuration = 150L
 
     constructor(context: Context) : super(context)
 
@@ -64,9 +64,17 @@ class CircularProgressBar : View {
 
     }
 
+    fun incrementCurrent(useAnimation: Boolean = false) {
+        if (useAnimation) {
+            setValueWithAnimation(currentValue + 1)
+        } else {
+            currentValue += 1
+        }
+    }
+
     fun setValueWithAnimation(newValue: Float) {
         ValueAnimator.ofFloat(currentValue, newValue).apply {
-            duration = sweepAnimationDurataion
+            duration = sweepAnimationDuration
             addUpdateListener {
                 currentValue = it.animatedValue as Float
                 invalidate()
