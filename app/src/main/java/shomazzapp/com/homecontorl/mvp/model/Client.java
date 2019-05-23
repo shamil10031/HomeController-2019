@@ -26,7 +26,7 @@ public class Client {
     private static final String NETWORK_TAG = "Network";
 
     public static final String HOST = "192.168.43.243";
-    public static final int PORT = 8887;
+    public static final int PORT = 8886;
     private int UDP_PORT;
     public static final int BYTES_COUNT = 1024;
     public static final int CHUNK_SIZE = 40960;
@@ -35,7 +35,6 @@ public class Client {
     private final int port;
     private Socket socket;
     private ClientListener listenner;
-    private Object lock;
 
     private AtomicInteger photosLoaded = new AtomicInteger();
 
@@ -79,7 +78,6 @@ public class Client {
     }
 
     public Thread sendBitmap(Bitmap bitmap, boolean closeSocket) {
-
         Log.d(NETWORK_TAG, "Send bitmap...");
         Thread thread = new Thread(() -> {
             try {

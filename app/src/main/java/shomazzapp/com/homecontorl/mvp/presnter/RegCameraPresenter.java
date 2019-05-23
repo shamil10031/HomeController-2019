@@ -50,7 +50,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
         super();
         client = new Client(this, Client.HOST, Client.PORT);
         prefHelper = new PreferencesHelper();
-        photoUploadManager = new PhotoUploadManager(client);
+        photoUploadManager = new PhotoUploadManager(client, this);
     }
 
     public void onStart() {
@@ -100,21 +100,6 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                getViewState().hidePic();
-                getViewState().hideHorProgressBar();
-                getViewState().showProgressBar();
-                getViewState().showMsg("Face registered, now relax :) It's almost done..");
-                Thread thread = new Thread(() -> {
-                    try {
-                        client.connectSocketIfNeed();
-                        reciveResponse(client.getResponse(client.getSocket()));
-                    } catch (IOException e) {
-                        reciveResponse(new Response(
-                                Response.CONNECTION_ERROR, null));
-                        e.printStackTrace();
-                    }
-                });
-                thread.start();
             }
         } else {
             if (photosSended + 1 == photosCount) {
@@ -123,6 +108,24 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                 getViewState().takePicture(false);
             }
         }
+    }
+
+    public void onPicsUploaded(){
+        getViewState().hidePic();
+        getViewState().hideHorProgressBar();
+        getViewState().showProgressBar();
+        getViewState().showMsg("Face registered, now relax :) It's almost done..");
+        Thread thread = new Thread(() -> {
+            try {
+                client.connectSocketIfNeed();
+                reciveResponse(client.getResponse(client.getSocket()));
+            } catch (IOException e) {
+                reciveResponse(new Response(
+                        Response.CONNECTION_ERROR, null));
+                e.printStackTrace();
+            }
+        });
+        thread.start();
     }
 
     public PhotoUploadManager getPhotoUploadManager() {

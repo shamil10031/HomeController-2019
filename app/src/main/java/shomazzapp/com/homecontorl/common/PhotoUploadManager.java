@@ -2,14 +2,17 @@ package shomazzapp.com.homecontorl.common;
 
 import shomazzapp.com.homecontorl.common.interfaces.CameraListenner;
 import shomazzapp.com.homecontorl.mvp.model.Client;
+import shomazzapp.com.homecontorl.mvp.presnter.RegCameraPresenter;
 
 public class PhotoUploadManager implements CameraListenner {
 
     private Client client;
     private int photosToSend;
+    private RegCameraPresenter presenter;
 
-    public PhotoUploadManager(Client client) {
+    public PhotoUploadManager(Client client, RegCameraPresenter presenter) {
         this.client = client;
+        this.presenter = presenter;
         photosToSend = 0;
     }
 
@@ -25,7 +28,12 @@ public class PhotoUploadManager implements CameraListenner {
     @Override
     public void onFrameReady(final byte[] picBytes) {
         if (photosToSend > 0) {
-            sendPhoto(picBytes, photosToSend == 1);
+            if (photosToSend == 1) {
+                sendPhoto(picBytes, false);
+                presenter.onPicsUploaded();
+            } else {
+                sendPhoto(picBytes, false);
+            }
         }
     }
 }
