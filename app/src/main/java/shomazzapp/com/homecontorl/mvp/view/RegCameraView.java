@@ -8,7 +8,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface RegCameraView extends MvpView {
 
-    void showHorProgressBar();
+    void showHorProgressBar(int maxValue);
 
     void hideHorProgressBar();
 

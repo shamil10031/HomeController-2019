@@ -29,7 +29,6 @@ public class MainActivity extends MvpAppCompatActivity implements FController {
 
     @Override
     public void onBackPressed() {
-        //TODO: remove Toast
         int count = getSupportFragmentManager().getBackStackEntryCount();
         if (count == 1) getSupportFragmentManager().popBackStack();
         super.onBackPressed();

@@ -26,7 +26,7 @@ public class Client {
     private static final String NETWORK_TAG = "Network";
 
     public static final String HOST = "192.168.43.243";
-    public static final int PORT = 8882;
+    public static final int PORT = 8887;
     private int UDP_PORT;
     public static final int BYTES_COUNT = 1024;
     public static final int CHUNK_SIZE = 40960;
@@ -51,19 +51,7 @@ public class Client {
         Log.d(NETWORK_TAG, "Send bitmap...");
         Thread thread = new Thread(() -> {
             try {
-                String encoded = Base64.encodeToString(pic, Base64.DEFAULT);
-
-                int imageBytesCount = encoded.length();
-                Log.d(NETWORK_TAG, "Sending bytes count = " + imageBytesCount);
-                sendRequest(new Request(imageBytesCount, null), false).join();
-                //sendRequestByUDP(new Request(imageBytesCount, null)).join();
-
-                Log.d(NETWORK_TAG, "Sending bytes [" + imageBytesCount + "]");
-                sendBytes(encoded);
-                //sendBytesUDPByChanks(encoded.getBytes());
-                Log.d(NETWORK_TAG, "Sended!");
-                listenner.reciveResponse(new Response(Response.BITMAP_SENDED,
-                        photosLoaded.incrementAndGet() + ""));
+                sendPicSync(pic);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -74,6 +62,20 @@ public class Client {
         });
         thread.start();
         return thread;
+    }
+
+    public synchronized void sendPicSync(byte[] pic) throws InterruptedException, IOException{
+        String encoded = Base64.encodeToString(pic, Base64.DEFAULT);
+
+        int imageBytesCount = encoded.length();
+        Log.d(NETWORK_TAG, "Sending bytes count = " + imageBytesCount);
+        sendRequest(new Request(imageBytesCount, null), false).join();
+
+        Log.d(NETWORK_TAG, "Sending bytes [" + imageBytesCount + "]");
+        sendBytes(encoded);
+        Log.d(NETWORK_TAG, "Sended!");
+        listenner.reciveResponse(new Response(Response.BITMAP_SENDED,
+                photosLoaded.incrementAndGet() + ""));
     }
 
     public Thread sendBitmap(Bitmap bitmap, boolean closeSocket) {

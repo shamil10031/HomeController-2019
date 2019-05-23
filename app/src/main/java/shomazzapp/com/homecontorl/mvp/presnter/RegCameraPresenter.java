@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +19,7 @@ import com.arellomobile.mvp.MvpPresenter;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import shomazzapp.com.homecontorl.common.PhotoUploadManager;
 import shomazzapp.com.homecontorl.common.PreferencesHelper;
 import shomazzapp.com.homecontorl.common.Screens;
 import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
@@ -39,6 +41,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
     public int photosCount;
     private int photosSended;
     private int UdpPort;
+    private PhotoUploadManager photoUploadManager;
 
     private static final int delay = 100;
     private long lastTimeFrameShoted = 0;
@@ -47,6 +50,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
         super();
         client = new Client(this, Client.HOST, Client.PORT);
         prefHelper = new PreferencesHelper();
+        photoUploadManager = new PhotoUploadManager(client);
     }
 
     public void onStart() {
@@ -61,22 +65,21 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
 
     public static Bitmap rotate(Bitmap bitmap) {
         Matrix matrix = new Matrix();
-        matrix.postRotate(90);
+        matrix.postRotate(-90);
         return Bitmap.createBitmap(bitmap, 0, 0,
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     //public void onPictureTaken(Bitmap bitmap, boolean isLast) {
     public void onPictureTaken(byte[] bitmap, boolean isLast) {
-//        Log.d("TAG", "Checking for delay. " + System.currentTimeMillis() + " - " + lastTimeFrameShoted);
         try {
             Thread.sleep(50);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (System.currentTimeMillis() - lastTimeFrameShoted >= delay) {
             Log.d("TAG", "Prepared! Sending...");
-            if (!isLast)
+            if (!isLast) {
                 try {
                     //client.sendBitmap(rotate(bitmap), false).join();
                     client.sendPicBytes(bitmap, false).join();
@@ -84,14 +87,13 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                     lastTimeFrameShoted = System.currentTimeMillis();
                     if (photosSended + 1 == photosCount) {
                         getViewState().takePicture(true);
-                    }
-                    else {
+                    } else {
                         getViewState().takePicture(false);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            else {
+            } else {
                 try {
                     //client.sendBitmap(rotate(bitmap), false).join();
                     client.sendPicBytes(bitmap, false).join();
@@ -115,11 +117,16 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                 thread.start();
             }
         } else {
-            if (photosSended + 1 == photosCount)
+            if (photosSended + 1 == photosCount) {
                 getViewState().takePicture(true);
-            else
+            } else {
                 getViewState().takePicture(false);
+            }
         }
+    }
+
+    public PhotoUploadManager getPhotoUploadManager() {
+        return photoUploadManager;
     }
 
     public void setFragmentController(FController fController) {
@@ -177,10 +184,11 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                     getViewState().showMsg("Face scanning... Follow instructions :)");
                     //getViewState().showPic();
                     getViewState().hideProgressBar();
-                    getViewState().showHorProgressBar();
                     photosCount = Integer.parseInt(response.getMessage().split(" ")[0]);
-//                    client.setUdpPort(Integer.parseInt(response.getMessage().split(" ")[1]));
-                    sendPictures();
+                    getViewState().showHorProgressBar(photosCount);
+                    photoUploadManager.startPhotosUpload(photosCount);
+                    //                    client.setUdpPort(Integer.parseInt(response.getMessage().split(" ")[1]));
+                    //sendPictures();
                     break;
             }
         });

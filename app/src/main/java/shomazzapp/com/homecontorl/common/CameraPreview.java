@@ -1,9 +1,6 @@
 package shomazzapp.com.homecontorl.common;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,50 +13,36 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
-import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import shomazzapp.com.homecontorl.common.interfaces.CameraListenner;
 import shomazzapp.com.homecontorl.mvp.presnter.RegCameraPresenter;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    public static final String TAG_CALLBACK = " CamCallbacks";
     private static final String TAG = "camera";
-    private Size mPreviewSize;
     private byte[] mImageData;
+    private Camera.Size mPreviewSize;
     private LinkedList<byte[]> mQueue = new LinkedList<byte[]>();
-    private static final int MAX_BUFFER = 300;
+    private static final int MAX_BUFFER = 3000;
     private byte[] mLastFrame = null;
-    private int mFrameLength;
+    private CameraListenner cameraListenner;
 
-    public CameraPreview(Context context, Camera camera) {
+    public CameraPreview(Context context, Camera camera, CameraListenner cameraListenner) {
         super(context);
+        this.cameraListenner = cameraListenner;
+        Log.d(TAG_CALLBACK, "CameraPreview constructor called!");
         mCamera = camera;
-
+        mPreviewSize = camera.getParameters().getPreviewSize();
         mHolder = getHolder();
         mHolder.addCallback(this);
-        // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        Parameters params = mCamera.getParameters();
-        List<Size> sizes = params.getSupportedPreviewSizes();
-        for (Size s : sizes) {
-            Log.i(TAG, "preview size = " + s.width + ", " + s.height);
-        }
-
-        params.setPreviewSize(640, 480); // set preview size. smaller is better
-        mCamera.setParameters(params);
-
-        mPreviewSize = mCamera.getParameters().getPreviewSize();
-        Log.i(TAG, "preview size = " + mPreviewSize.width + ", " + mPreviewSize.height);
-
-        int format = mCamera.getParameters().getPreviewFormat();
-        mFrameLength = mPreviewSize.width * mPreviewSize.height * ImageFormat.getBitsPerPixel(
-                format) / 8;
     }
 
     public LinkedList<byte[]> getQueue() {
@@ -67,6 +50,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
+        Log.d(TAG_CALLBACK, "CameraPreview surface created!");
         try {
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
@@ -76,30 +60,31 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        Log.d(TAG_CALLBACK, "CameraPreview surface destroyed!");
+        Log.d(TAG, "Queue size = " + mQueue.size());
+        if (mCamera != null) {
+            mCamera.release();
+            resetBuff();
+        }
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-
         if (mHolder.getSurface() == null) {
             return;
         }
+        mCamera.stopPreview();
+        Camera.Parameters parameters = mCamera.getParameters();
+        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
+        Camera.Size previewSize = previewSizes.get(0);
+        parameters.setPreviewSize(previewSize.width, previewSize.height);
+        mCamera.setPreviewCallback(mPreviewCallback);
+        mCamera.setParameters(parameters);
 
         try {
-            mCamera.stopPreview();
-            resetBuff();
-
-        } catch (Exception e) {
-
-        }
-
-        try {
-            mCamera.setPreviewCallback(mPreviewCallback);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
-
-        } catch (Exception e) {
-            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -113,31 +98,18 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 mLastFrame = mQueue.poll();
             }
         }
-
         return mLastFrame;
     }
 
     private void resetBuff() {
-
         synchronized (mQueue) {
             mQueue.clear();
             mLastFrame = null;
         }
     }
 
-    public int getPreviewLength() {
-        return mFrameLength;
-    }
-
-    public int getPreviewWidth() {
-        return mPreviewSize.width;
-    }
-
-    public int getPreviewHeight() {
-        return mPreviewSize.height;
-    }
-
     public void onPause() {
+        Log.d(TAG_CALLBACK, "CameraPreview surface onPause!");
         try {
             if (mCamera != null) {
                 mCamera.setPreviewCallback(null);
@@ -146,28 +118,48 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         } catch (Exception e) {
             e.printStackTrace();
         }
-        resetBuff();
     }
 
     private Camera.PreviewCallback mPreviewCallback = (data, camera) -> {
+        Log.d(TAG_CALLBACK, "preview callback");
         synchronized (mQueue) {
             if (mQueue.size() == MAX_BUFFER) {
+                Log.d(TAG_CALLBACK, "Queue size = " + mQueue.size());
                 mQueue.poll();
             }
             YuvImage im = new YuvImage(data, ImageFormat.NV21, mPreviewSize.width,
-                    mPreviewSize.height, null);
+                    camera.getParameters().getPreviewSize().height, null);
             Rect r = new Rect(0, 0, mPreviewSize.width, mPreviewSize.height);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            im.compressToJpeg(r, 100, baos);
+            im.compressToJpeg(r, 70, baos);
             byte[] imageBytes = baos.toByteArray();
             Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             image = RegCameraPresenter.rotate(image);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.JPEG, 50, stream);
             byte[] byteArray = stream.toByteArray();
+            if (cameraListenner != null)
+                cameraListenner.onFrameReady(byteArray);
             image.recycle();
             mQueue.add(byteArray);
 
         }
     };
+
+    public static Camera openFrontFacingCamera() {
+        Camera cam = null;
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        int cameraCount = Camera.getNumberOfCameras();
+        for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
+            Camera.getCameraInfo(camIdx, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                try {
+                    cam = Camera.open(camIdx);
+                } catch (RuntimeException e) {
+                    Log.e(TAG, "Camera failed to open: " + e.getLocalizedMessage());
+                }
+            }
+        }
+        return cam;
+    }
 }

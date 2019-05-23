@@ -32,10 +32,12 @@ import io.fotoapparat.selector.SelectorsKt;
 import io.fotoapparat.view.CameraView;
 import shomazzapp.com.homecontorl.R;
 import shomazzapp.com.homecontorl.common.CameraPreview;
+import shomazzapp.com.homecontorl.common.interfaces.ClientListener;
 import shomazzapp.com.homecontorl.common.interfaces.FController;
 import shomazzapp.com.homecontorl.common.interfaces.ViewPagerController;
 import shomazzapp.com.homecontorl.mvp.presnter.RegCameraPresenter;
 import shomazzapp.com.homecontorl.mvp.view.RegCameraView;
+import shomazzapp.com.homecontorl.ui.views.CircularProgressBar;
 
 public class RegCameraFragment extends MvpAppCompatFragment implements RegCameraView {
 
@@ -47,10 +49,10 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     private Fotoapparat fotoapparat;
     private CameraView cameraView;
     private ProgressBar progressBar;
-//    private ProgressBar horProgressBar;
     private TextView textView;
     private ImageView imViewInstruction;
     private String currentMsg;
+    private CircularProgressBar circularProgressBar;
 
     private static final int LAYOUT = R.layout.fragment_reg_camera;
 
@@ -61,6 +63,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(CameraPreview.TAG_CALLBACK, "CameraFragment onCreate!");
         FController fController = (FController) getActivity();
         presenter.setFragmentController(fController);
         presenter.setViewPagerController((ViewPagerController)
@@ -72,6 +75,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(CameraPreview.TAG_CALLBACK, "CameraFragment onCreateView!");
         View view = inflater.inflate(LAYOUT, container, false);
         init(view);
         return view;
@@ -80,21 +84,13 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @Override
     public void takePicture(boolean isLast) {
         Log.d("TAG", "Taking picture from queue...");
-        if (mPreview.getQueue().peek() != null || mPreview.getQueue().peek().length != 0 ) {
-            Log.d("TAG", "Picture taken!");
-            presenter.onPictureTaken(mPreview.getQueue().poll(), isLast);
+        if (mPreview.getQueue() != null) {
+            Log.d("TAG", "Queue size = " + mPreview.getQueue().size());
+            if (mPreview.getQueue().peek() != null && mPreview.getQueue().peek().length != 0) {
+                Log.d("TAG", "Picture taken!");
+                presenter.onPictureTaken(mPreview.getQueue().poll(), isLast);
+            }
         }
-
-        /*if (fotoapparat != null) {
-            PhotoResult photoResult = fotoapparat.takePicture();
-            Log.d("TAG", "Picture taken! Preparing...");
-            photoResult.toBitmap().whenDone(bitmapPhoto ->
-            {
-                presenter.onPictureTaken(bitmapPhoto.bitmap, isLast);
-            });
-        } else {
-            Log.e("TAG", "Fotoapparat is null");
-        }*/
     }
 
     @Override
@@ -109,50 +105,47 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
 
     private void init(View view) {
         mCamera = getCameraInstance();
-        mPreview = new CameraPreview(getContext(), mCamera);
-        FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_view);
-        preview.addView(mPreview);
-//        horProgressBar = (ProgressBar) view.findViewById(R.id.hor_progress_reg_camera);
+        mPreview = new CameraPreview(getContext(), mCamera, presenter.getPhotoUploadManager());
+        ((FrameLayout) view.findViewById(R.id.camera_view)).addView(mPreview);
         imViewInstruction = (ImageView) view.findViewById(R.id.im_view_reg_instr);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_reg_camera);
-        //cameraView = (CameraView) view.findViewById(R.id.camera_view);
         textView = (TextView) view.findViewById(R.id.tv_reg_camera);
+        circularProgressBar = (CircularProgressBar) view.findViewById(R.id.progress_circular);
         currentMsg = "Нажмите на кнопку START для регистрации лица";
         hidePic();
         hideProgressBar();
-        //initFotoapparat();
         Button btnStart = (Button) view.findViewById(R.id.btn_reg_start_camera);
         btnStart.setOnClickListener((View.OnClickListener) v -> presenter.onStart());
     }
 
     @Override
-    public void showHorProgressBar() {
-//        horProgressBar.setVisibility(View.VISIBLE);
-//        horProgressBar.setMax(presenter.photosCount);
-    }
-
-    @Override
     public void hideHorProgressBar() {
-//        horProgressBar.setVisibility(View.GONE);
+        //        horProgressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void updateLoadingBar(int value) {
-//        horProgressBar.setProgress(value);
+        circularProgressBar.setValueWithAnimation(value);
+    }
+
+    @Override
+    public void showHorProgressBar(int maxValue) {
+        circularProgressBar.setMaxValue(maxValue);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //fotoapparat.start();
+        Log.d(CameraPreview.TAG_CALLBACK, "CameraFragment onResume!");
         textView.setText(currentMsg);
         hidePic();
         hideProgressBar();
         try {
-            if(mCamera == null)
+            if (mCamera == null) {
                 mCamera = getCameraInstance();
+            }
             mPreview.setCamera(mCamera);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d("Camera", "Error starting camera preview: " + e.getMessage());
         }
     }
@@ -160,6 +153,7 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(CameraPreview.TAG_CALLBACK, "CameraFragment onPause!");
         mPreview.onPause();
         if (mCamera != null) {
             mCamera.release();
@@ -170,12 +164,13 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
     @Override
     public void onStop() {
         super.onStop();
-//        fotoapparat.stop();
+        Log.d(CameraPreview.TAG_CALLBACK, "CameraFragment onStop!");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(CameraPreview.TAG_CALLBACK, "CameraFragment onDestroy!");
         fotoapparat = null;
         cameraView = null;
         textView = null;
@@ -227,13 +222,12 @@ public class RegCameraFragment extends MvpAppCompatFragment implements RegCamera
                 .build();
     }
 
-    public static Camera getCameraInstance(){
+    public static Camera getCameraInstance() {
         Camera c = null;
         try {
-            c = Camera.open();
+            c = CameraPreview.openFrontFacingCamera();
             c.setDisplayOrientation(90);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return c;

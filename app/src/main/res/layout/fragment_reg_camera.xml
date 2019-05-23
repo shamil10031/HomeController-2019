@@ -8,10 +8,12 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
+    <!--TODO: fitSystemWindows true-->
+
     <FrameLayout
         android:id="@+id/camera_view"
-        android:layout_width="@dimen/reg_camera_diameter_dp"
-        android:layout_height="@dimen/reg_camera_diameter_dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +54,7 @@
         android:id="@+id/tv_reg_camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:gravity="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +67,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="30dp"
         android:fitsSystemWindows="true"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,6 +75,7 @@
         tools:visibility="visible" />
 
     <shomazzapp.com.homecontorl.ui.views.CircularProgressBar
+        android:id="@+id/progress_circular"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@id/im_view_reg_instr"
