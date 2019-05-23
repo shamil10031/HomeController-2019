@@ -1,5 +1,6 @@
 package shomazzapp.com.homecontorl.ui.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -17,15 +18,16 @@ class CircularProgressBar : View {
     private var radius = 0.toFloat()
     private var maxValue: Float = 0f
     private var currentValue: Float = 0f
-        set(value) {
-            field = value
-            invalidate()
-        }
+    set(value) {
+        field = value
+        invalidate()
+    }
 
     private val oval = RectF()
     private var strokeWidth = 10f
     private var startAngle = 90f
     private var sweepDistance = 360f
+    private val sweepAnimationDurataion = 200L
 
     constructor(context: Context) : super(context)
 
@@ -62,6 +64,17 @@ class CircularProgressBar : View {
 
     }
 
+    fun setValueWithAnimation(newValue: Float) {
+        ValueAnimator.ofFloat(currentValue, newValue).apply {
+            duration = sweepAnimationDurataion
+            addUpdateListener {
+                currentValue = it.animatedValue as Float
+                invalidate()
+            }
+            start()
+        }
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         radius = Math.min(w, h) / 2f
@@ -70,8 +83,8 @@ class CircularProgressBar : View {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        val w = View.MeasureSpec.getSize(widthMeasureSpec)
-        val h = View.MeasureSpec.getSize(heightMeasureSpec)
+        val w = MeasureSpec.getSize(widthMeasureSpec)
+        val h = MeasureSpec.getSize(heightMeasureSpec)
 
         val size = Math.min(w, h)
         setMeasuredDimension(size, size)
