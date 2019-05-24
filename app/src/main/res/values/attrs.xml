@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CircularProgressBar">
-        <attr name="backgroundColor" format="color"/>
-        <attr name="foregroundColor" format="color"/>
+        <attr name="backgroundColor" format="color" />
+        <attr name="foregroundColor" format="color" />
         <attr name="maxValue" format="float" />
         <attr name="startAngle" format="float" />
         <attr name="sweepDistance" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="ItemsFlipView">
+        <attr name="maxViews" format="integer" />
     </declare-styleable>
 </resources>
