@@ -184,7 +184,7 @@ public class RegCameraPresenter extends MvpPresenter<RegCameraView> implements C
                     getViewState().updateLoadingBar(Integer.parseInt(response.getMessage()));
                     break;
                 case 201:
-                    getViewState().showMsg("Face scanning... Follow instructions :)");
+                    getViewState().showMsg("Face scanning... Rotate head slowly :)");
                     //getViewState().showPic();
                     getViewState().hideProgressBar();
                     photosCount = Integer.parseInt(response.getMessage().split(" ")[0]);
