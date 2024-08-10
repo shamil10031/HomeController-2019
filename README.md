@@ -1,12 +1,11 @@
 # HomeController-2019
-Приложение для умного дома
+Smart Home App
 
-Описание:
+Description:
 
-Прототип приложения, которое способоно взаимодействовать с устройствами умного дома (базовая функциональность, отправляется запрос на включение или выключение устройства).
+A prototype app designed to interact with smart home devices, offering basic functionality to send requests for turning devices on or off.
 
-Основной частью приложения является функция face id. Данная функция позволяет регистрировать лицо на сервере, а затем по лицу открывать умный дверной замок.
-Работает приложение через UDP-сокетное соединение. При идентификации по лицу через сокетное соединение отправляются фреймы с камеры на сервер. При успешной идентификации, сервер на raspbery pi открывает прототип дверного замка. Включение и выключение умных устройств реализовано на уровне включения и выключеня led индикаторов платы (важно было показать работающий прототип проекта, без умных устройств).
+The core feature of the app is face recognition. This feature allows a face to be registered on the server and then used to unlock a smart door lock. The app operates via a UDP socket connection. During face recognition, frames from the camera are sent to the server through the socket connection. Upon successful identification, the server on a Raspberry Pi unlocks the prototype door lock. The functionality to turn smart devices on and off is demonstrated by controlling the LED indicators on the board (the goal was to show a working prototype of the project without using actual smart devices).
 
 <img src="https://user-images.githubusercontent.com/17685189/147873233-fed36ee2-7f30-4fc4-aadf-2f54f0c503b3.png" width="300" />   <img src="https://user-images.githubusercontent.com/17685189/147873241-00074ade-5299-4a8b-9db8-0a08ef937192.png" width="300" />
 
